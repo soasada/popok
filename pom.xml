@@ -60,7 +60,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.1.1</version>
+            <version>5.2.0</version>
         </dependency>
 
         <dependency>
@@ -80,7 +80,7 @@
                 <configuration>
                     <verbose>true</verbose>
                     <fork>true</fork>
-                    <executable>/opt/jdk-10/bin/javac</executable>
+                    <executable>/opt/prod_jdk/bin/javac</executable>
                     <source>1.10</source>
                     <target>1.10</target>
                     <showWarnings>true</showWarnings>
