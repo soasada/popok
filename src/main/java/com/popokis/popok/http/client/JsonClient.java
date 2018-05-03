@@ -12,14 +12,19 @@ public final class JsonClient implements Client<String> {
 
   private final Duration timeout;
 
-  public JsonClient() {
-    this(Duration.ofMinutes(1));
+  private JsonClient() {
+    timeout = Duration.ofMinutes(2);
   }
 
-  public JsonClient(Duration timeout) {
-    this.timeout = timeout;
+  private static class Holder {
+    private static final Client<String> INSTANCE = new JsonClient();
   }
 
+  public static Client<String> getInstance() {
+    return Holder.INSTANCE;
+  }
+
+  @Override
   public String get(String url) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
@@ -29,6 +34,7 @@ public final class JsonClient implements Client<String> {
     return httpRequest(request);
   }
 
+  @Override
   public String post(String url, String jsonBody) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))

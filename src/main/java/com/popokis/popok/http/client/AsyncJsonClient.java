@@ -12,14 +12,19 @@ public final class AsyncJsonClient implements Client<CompletableFuture<HttpRespo
 
   private final Duration timeout;
 
-  public AsyncJsonClient() {
-    this(Duration.ofMinutes(1));
+  private AsyncJsonClient() {
+    timeout = Duration.ofMinutes(2);
   }
 
-  public AsyncJsonClient(Duration timeout) {
-    this.timeout = timeout;
+  private static class Holder {
+    private static final Client<CompletableFuture<HttpResponse<String>>> INSTANCE = new AsyncJsonClient();
   }
 
+  public static Client<CompletableFuture<HttpResponse<String>>> getInstance() {
+    return Holder.INSTANCE;
+  }
+
+  @Override
   public CompletableFuture<HttpResponse<String>> get(String url) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
@@ -29,6 +34,7 @@ public final class AsyncJsonClient implements Client<CompletableFuture<HttpRespo
     return httpRequest(request);
   }
 
+  @Override
   public CompletableFuture<HttpResponse<String>> post(String url, String jsonBody) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
