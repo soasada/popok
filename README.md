@@ -4,3 +4,8 @@ A super simple, fail-first, microservices oriented set of interfaces and default
 ## To run the tests
 
 `docker-compose up`
+
+## To Do
+* Test joins with object mapping.
+* Test joins with aliases.
+* Add Async undertow handler when call an external web service.
