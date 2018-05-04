@@ -1,4 +1,4 @@
-package com.popokis.popok.dummy;
+package com.popokis.popok.util.query;
 
 import com.popokis.popok.data.Query;
 
