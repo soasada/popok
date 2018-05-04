@@ -47,7 +47,6 @@ public final class Database {
          PreparedStatement preparedStatement = connection.prepareStatement(query.query())) {
       query.parameters(preparedStatement);
       rowsAffected = preparedStatement.executeUpdate();
-      verifyRows(rowsAffected);
     }
 
     return rowsAffected;
