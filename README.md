@@ -3,4 +3,4 @@ A super simple, fail-first, microservices oriented set of interfaces and default
 
 ## To run the tests
 
-docker-compose up
+`docker-compose up`
