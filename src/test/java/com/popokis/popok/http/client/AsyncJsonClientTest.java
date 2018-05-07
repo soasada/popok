@@ -1,5 +1,8 @@
 package com.popokis.popok.http.client;
 
+import com.popokis.popok.http.extractor.GetExtractor;
+import com.popokis.popok.http.extractor.PostExtractor;
+import com.popokis.popok.util.http.FakeServer;
 import jdk.incubator.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +24,8 @@ class AsyncJsonClientTest {
 
   @Test
   public void asyncGetTest() {
-    CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.get("https://httpbin.org/get?id=popokis");
+    FakeServer fakeServer = new FakeServer();
+    CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.get(fakeServer.url() + "?key=popokis");
 
     String payload = "";
 
@@ -30,6 +34,8 @@ class AsyncJsonClientTest {
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
+
+    fakeServer.stop();
 
     assertTrue(payload.contains("popokis"));
   }
