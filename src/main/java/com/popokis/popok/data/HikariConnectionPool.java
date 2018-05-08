@@ -17,9 +17,9 @@ final class HikariConnectionPool {
     HikariConfig hikariConfig;
 
     if (config.hasPath("test")) {
-      hikariConfig = getTestConfig(config.getConfig("test"));
+      hikariConfig = getConfig(config.getConfig("test"));
     } else {
-      hikariConfig = getProdConfig(config.getConfig("prod"));
+      hikariConfig = getConfig(config.getConfig("prod"));
     }
 
     dataSource = new HikariDataSource(hikariConfig);
@@ -37,7 +37,7 @@ final class HikariConnectionPool {
     return dataSource.getConnection();
   }
 
-  private HikariConfig getProdConfig(Config config) {
+  private HikariConfig getConfig(Config config) {
     HikariConfig hikariConfig = new HikariConfig();
 
     hikariConfig.setMaximumPoolSize(config.getInt("maximumPoolSize"));
@@ -49,17 +49,6 @@ final class HikariConnectionPool {
     hikariConfig.addDataSourceProperty("prepStmtCacheSize", config.getString("prepStmtCacheSize"));
     hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", config.getString("prepStmtCacheSqlLimit"));
     hikariConfig.addDataSourceProperty("useServerPrepStmts", config.getString("useServerPrepStmts"));
-
-    return hikariConfig;
-  }
-
-  private HikariConfig getTestConfig(Config config) {
-    HikariConfig hikariConfig = new HikariConfig();
-
-    hikariConfig.setDataSourceClassName(config.getString("dataSourceClassName"));
-    hikariConfig.addDataSourceProperty("URL", config.getString("URL"));
-    hikariConfig.addDataSourceProperty("user", config.getString("user"));
-    hikariConfig.addDataSourceProperty("password", config.getString("password"));
 
     return hikariConfig;
   }
