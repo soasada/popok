@@ -23,7 +23,7 @@ class AsyncJsonClientTest {
   }
 
   @Test
-  public void asyncGetTest() {
+  void asyncGetTest() {
     CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.get(FAKE_SERVER.url() + "/fake/get?key=popokis");
 
     String payload = "";
@@ -38,7 +38,7 @@ class AsyncJsonClientTest {
   }
 
   @Test
-  public void asyncPostTest() {
+  void asyncPostTest() {
     CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.post(FAKE_SERVER.url() + "/fake/post", "popokis");
     String payload = "";
 
