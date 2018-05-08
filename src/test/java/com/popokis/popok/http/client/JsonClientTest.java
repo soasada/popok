@@ -19,13 +19,13 @@ class JsonClientTest {
   }
 
   @Test
-  void asyncGetTest() {
+  void syncGetTest() {
     String response = CLIENT.get(FAKE_SERVER.url() + "/fake/get?key=popokis");
     assertTrue(response.contains("popokis"));
   }
 
   @Test
-  void asyncPostTest() {
+  void syncPostTest() {
     String response = CLIENT.post(FAKE_SERVER.url() + "/fake/post", "popokis");
     assertTrue(response.contains("popokis"));
   }
