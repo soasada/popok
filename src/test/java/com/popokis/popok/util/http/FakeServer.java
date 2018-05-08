@@ -1,6 +1,5 @@
 package com.popokis.popok.util.http;
 
-import com.popokis.popok.http.extractor.Extractor;
 import com.popokis.popok.http.extractor.GetExtractor;
 import com.popokis.popok.http.extractor.PostExtractor;
 import io.undertow.Undertow;
@@ -17,8 +16,8 @@ public final class FakeServer {
   public FakeServer() {
     RoutingHandler routes = new RoutingHandler();
     routes
-        .get(API_VERSION + "/fake/get", new BlockingHandler(new FakeHandler(new GetExtractor())))
-        .post(API_VERSION + "/fake/post", new BlockingHandler(new FakeHandler(new PostExtractor())));
+        .get(API_VERSION + "/fake/get", new BlockingHandler(new FakeTextHandler(new GetExtractor())))
+        .post(API_VERSION + "/fake/post", new BlockingHandler(new FakeTextHandler(new PostExtractor())));
 
     server = Undertow.builder()
         .addHttpListener(PORT, URL)
@@ -33,6 +32,6 @@ public final class FakeServer {
   }
 
   public String url() {
-    return "http://" + URL + ":" + PORT;
+    return "http://" + URL + ":" + PORT + API_VERSION;
   }
 }

@@ -13,4 +13,10 @@ public final class ResponseSender {
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
     exchange.getResponseSender().send(response);
   }
+
+  public static void asText(HttpServerExchange exchange, String response) {
+    exchange.setStatusCode(StatusCodes.OK);
+    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+    exchange.getResponseSender().send(response);
+  }
 }

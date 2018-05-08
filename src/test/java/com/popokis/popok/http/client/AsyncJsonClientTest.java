@@ -1,7 +1,5 @@
 package com.popokis.popok.http.client;
 
-import com.popokis.popok.http.extractor.GetExtractor;
-import com.popokis.popok.http.extractor.PostExtractor;
 import com.popokis.popok.util.http.FakeServer;
 import jdk.incubator.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
@@ -16,16 +14,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AsyncJsonClientTest {
 
   private static Client<CompletableFuture<HttpResponse<String>>> ASYNC_CLIENT;
+  private static FakeServer FAKE_SERVER;
 
   @BeforeAll
   static void initAll() {
     ASYNC_CLIENT = AsyncJsonClient.getInstance();
+    FAKE_SERVER = new FakeServer();
   }
 
   @Test
   public void asyncGetTest() {
-    FakeServer fakeServer = new FakeServer();
-    CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.get(fakeServer.url() + "?key=popokis");
+    CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.get(FAKE_SERVER.url() + "/fake/get?key=popokis");
 
     String payload = "";
 
@@ -35,14 +34,12 @@ class AsyncJsonClientTest {
       e.printStackTrace();
     }
 
-    fakeServer.stop();
-
     assertTrue(payload.contains("popokis"));
   }
 
   @Test
   public void asyncPostTest() {
-    CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.post("https://httpbin.org/post", "popokis");
+    CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.post(FAKE_SERVER.url() + "/fake/post", "popokis");
     String payload = "";
 
     try {
@@ -57,5 +54,6 @@ class AsyncJsonClientTest {
   @AfterAll
   static void tearDownAll() {
     ASYNC_CLIENT = null;
+    FAKE_SERVER.stop();
   }
 }
