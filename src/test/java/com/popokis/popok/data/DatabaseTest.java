@@ -2,7 +2,6 @@ package com.popokis.popok.data;
 
 import com.popokis.popok.util.data.DatabaseUtil;
 import com.popokis.popok.util.query.DeleteQuery;
-import com.popokis.popok.util.query.InsertQuery;
 import com.popokis.popok.util.query.SelectQuery;
 import com.popokis.popok.util.query.UpdateQuery;
 import org.junit.jupiter.api.AfterAll;

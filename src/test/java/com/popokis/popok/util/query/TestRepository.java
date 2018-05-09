@@ -3,10 +3,23 @@ package com.popokis.popok.util.query;
 import com.popokis.popok.data.BasicRepository;
 import com.popokis.popok.data.Query;
 
+import java.sql.PreparedStatement;
+
 public final class TestRepository implements BasicRepository<String> {
+
   @Override
   public Query save(String model) {
-    return null;
+    return new Query() {
+      @Override
+      public String query() {
+        return "INSERT INTO test (name) VALUES('test')";
+      }
+
+      @Override
+      public void parameters(PreparedStatement stm) {
+
+      }
+    };
   }
 
   @Override
