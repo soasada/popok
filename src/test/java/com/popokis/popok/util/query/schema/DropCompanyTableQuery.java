@@ -1,13 +1,13 @@
-package com.popokis.popok.util.query;
+package com.popokis.popok.util.query.schema;
 
 import com.popokis.popok.data.Query;
 
 import java.sql.PreparedStatement;
 
-public final class DropTableQuery implements Query {
+public final class DropCompanyTableQuery implements Query {
   @Override
   public String query() {
-    return "DROP TABLE IF EXISTS test";
+    return "DROP TABLE IF EXISTS company";
   }
 
   @Override

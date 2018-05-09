@@ -1,6 +1,6 @@
 package com.popokis.popok.data;
 
-import com.popokis.popok.util.DatabaseUtil;
+import com.popokis.popok.util.data.DatabaseUtil;
 import com.popokis.popok.util.query.DeleteQuery;
 import com.popokis.popok.util.query.InsertQuery;
 import com.popokis.popok.util.query.SelectQuery;
@@ -19,7 +19,7 @@ class DatabaseTest {
 
   @BeforeAll
   static void initAll() throws SQLException {
-    DatabaseUtil.createTestTable();
+    DatabaseUtil.createTestSchema();
   }
 
   @Test
@@ -56,6 +56,6 @@ class DatabaseTest {
 
   @AfterAll
   static void tearDownAll() throws SQLException {
-    DatabaseUtil.dropTestTable();
+    DatabaseUtil.dropTestSchema();
   }
 }
