@@ -16,7 +16,7 @@ final class HikariConnectionPool {
     Config config = ConfigFactory.defaultApplication().resolve();
     HikariConfig hikariConfig;
 
-    if (config.hasPath("test")) {
+    if (config.getString("appEnv").equals("test")) {
       hikariConfig = getConfig(config.getConfig("test"));
     } else {
       hikariConfig = getConfig(config.getConfig("prod"));
