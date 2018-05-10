@@ -21,10 +21,6 @@
         </license>
     </licenses>
 
-    <scm>
-        <url>https://svn.apache.org/viewvc/maven</url>
-    </scm>
-
     <dependencies>
 
         <dependency>
@@ -137,4 +133,9 @@
         </plugins>
     </build>
 
+    <scm>
+        <connection>scm:git:git://github.com/soasada/popok.git</connection>
+        <developerConnection>scm:git:ssh://github.com:soasada/popok.git</developerConnection>
+        <url>https://github.com/soasada/popok/tree/master</url>
+    </scm>
 </project>
