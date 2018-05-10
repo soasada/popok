@@ -14,10 +14,10 @@ public abstract class TestModel {
     return new AutoValue_TestModel(id, name);
   }
 
+  @Nullable
   @JsonProperty("id")
   public abstract Long id();
 
-  @Nullable
   @JsonProperty("name")
   public abstract String name();
 }

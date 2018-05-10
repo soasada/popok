@@ -1,9 +1,8 @@
 package com.popokis.popok.data;
 
 import com.popokis.popok.util.data.DatabaseUtil;
-import com.popokis.popok.util.query.DeleteQuery;
-import com.popokis.popok.util.query.SelectQuery;
-import com.popokis.popok.util.query.UpdateQuery;
+import com.popokis.popok.util.data.model.TestModel;
+import com.popokis.popok.util.query.TestRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,15 +15,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DatabaseTest {
 
+  private static BasicRepository<TestModel> testRepository;
+
   @BeforeAll
   static void initAll() throws SQLException {
+    testRepository = new TestRepository();
     DatabaseUtil.createTestSchema();
   }
 
   @Test
   void insertAndSelectTest() throws SQLException {
-    long id = Database.getInstance().executeInsert(new InsertQuery());
-    CachedRowSet cachedRowSet = Database.getInstance().executeQuery(new SelectQuery(id));
+    long id = Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
+    CachedRowSet cachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
     cachedRowSet.next();
     String name = cachedRowSet.getString("name");
 
@@ -34,8 +36,8 @@ class DatabaseTest {
 
   @Test
   void insertAndDeleteTest() throws SQLException {
-    long id = Database.getInstance().executeInsert(new InsertQuery());
-    int affectedRow = Database.getInstance().executeDML(new DeleteQuery(id));
+    long id = Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
+    int affectedRow = Database.getInstance().executeDML(testRepository.remove(id));
 
     assertEquals(1, affectedRow);
   }
@@ -44,9 +46,9 @@ class DatabaseTest {
   void insertAndUpdateTest() throws SQLException {
     String expectedName = "test2";
 
-    long id = Database.getInstance().executeInsert(new InsertQuery());
-    int affectedRow = Database.getInstance().executeDML(new UpdateQuery(expectedName, id));
-    CachedRowSet cachedRowSet = Database.getInstance().executeQuery(new SelectQuery(id));
+    long id = Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
+    int affectedRow = Database.getInstance().executeDML(testRepository.modify(TestModel.create(id, expectedName)));
+    CachedRowSet cachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
     cachedRowSet.next();
 
     assertEquals(1, affectedRow);
