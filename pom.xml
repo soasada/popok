@@ -173,6 +173,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <additionalJOption>--add-modules=jdk.incubator.httpclient</additionalJOption>
+                </configuration>
             </plugin>
 
             <plugin>
