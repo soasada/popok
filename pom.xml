@@ -13,6 +13,33 @@
     <groupId>com.popokis</groupId>
     <artifactId>popok</artifactId>
     <version>0.1.0</version>
+    <packaging>jar</packaging>
+
+    <name>Popok</name>
+    <description>Simple interfaces and default classes to build web services</description>
+    <url>http://www.popokis.com</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Nicolas Vargas Ortega</name>
+            <email>nvortega92[at]gmail[dot]com</email>
+            <organization>Popokis</organization>
+            <organizationUrl>http://www.popokis.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/soasada/popok.git</connection>
+        <developerConnection>scm:git:ssh://github.com:soasada/popok.git</developerConnection>
+        <url>http://github.com/soasada/popok/tree/master</url>
+    </scm>
 
     <distributionManagement>
         <snapshotRepository>
@@ -25,36 +52,27 @@
         </repository>
     </distributionManagement>
 
-    <name>Popok</name>
-    <description>Simple interfaces and default classes to build web services</description>
-    <url>http://popokis.com</url>
-
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
     <dependencies>
 
         <dependency>
             <groupId>com.google.auto.value</groupId>
             <artifactId>auto-value</artifactId>
             <version>1.6</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.auto.value</groupId>
             <artifactId>auto-value-annotations</artifactId>
             <version>1.6</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.auto</groupId>
             <artifactId>auto-common</artifactId>
             <version>0.10</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -206,10 +224,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <scm>
-        <connection>scm:git:git://github.com/soasada/popok.git</connection>
-        <developerConnection>scm:git:ssh://github.com:soasada/popok.git</developerConnection>
-        <url>https://github.com/soasada/popok/tree/master</url>
-    </scm>
 </project>
