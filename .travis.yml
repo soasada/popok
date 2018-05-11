@@ -5,6 +5,10 @@ sudo: enabled
 env:
   - DOCKER_COMPOSE_VERSION=1.21.2
 
+addons:
+  apt:
+    update: true
+
 before_install:
   - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
   - sudo rm /usr/local/bin/docker-compose
