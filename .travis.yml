@@ -1,7 +1,12 @@
 language: java
 
+sudo: enabled
+
 env:
   - DOCKER_COMPOSE_VERSION=1.21.2
+
+jdk:
+  - oraclejdk10
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
@@ -10,3 +15,8 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - docker-compose up -d
 
+after_success:
+  - docker-compose stop
+
+after_failure:
+  - docker-compose stop
