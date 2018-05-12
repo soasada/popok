@@ -1,5 +1,7 @@
 package com.popokis.popok.data;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
 import java.sql.Connection;
@@ -10,7 +12,7 @@ import java.sql.Statement;
 
 public final class Database {
 
-  private final HikariConnectionPool connectionPool;
+  private final ConnectionPool<HikariDataSource> connectionPool;
 
   private Database() {
     connectionPool = HikariConnectionPool.getInstance();
