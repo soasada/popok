@@ -1,7 +1,5 @@
 package com.popokis.popok.data;
 
-import java.lang.RuntimeException;
-
 import javax.sql.rowset.CachedRowSet;
 import java.math.BigDecimal;
 import java.sql.Date;
