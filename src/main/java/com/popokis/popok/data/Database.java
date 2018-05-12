@@ -54,8 +54,8 @@ public final class Database {
     return rowsAffected;
   }
 
-  public CachedRowSet executeQuery(Query query) throws SQLException {
-    CachedRowSet result;
+  public FixedCachedRowSet executeQuery(Query query) throws SQLException {
+    FixedCachedRowSet result;
 
     try (Connection connection = connectionPool.getConnection();
          PreparedStatement preparedStatement = connection.prepareStatement(query.query())) {
@@ -65,7 +65,7 @@ public final class Database {
         CachedRowSet cachedRowSet = RowSetProvider.newFactory().createCachedRowSet();
         cachedRowSet.populate(resultSet);
 
-        result = cachedRowSet;
+        result = new FixedCachedRowSet(cachedRowSet);
       }
     }
 

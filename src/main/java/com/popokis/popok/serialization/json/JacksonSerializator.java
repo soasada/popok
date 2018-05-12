@@ -1,6 +1,8 @@
-package com.popokis.popok.serialization;
+package com.popokis.popok.serialization.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.popokis.popok.serialization.Serializator;
+import com.popokis.popok.serialization.json.CustomObjectMapper;
 
 public final class JacksonSerializator<T> implements Serializator<String, T> {
 

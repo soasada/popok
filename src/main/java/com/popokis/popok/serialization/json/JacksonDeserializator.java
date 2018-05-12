@@ -1,4 +1,7 @@
-package com.popokis.popok.serialization;
+package com.popokis.popok.serialization.json;
+
+import com.popokis.popok.serialization.Deserializator;
+import com.popokis.popok.serialization.json.CustomObjectMapper;
 
 import java.io.IOException;
 
