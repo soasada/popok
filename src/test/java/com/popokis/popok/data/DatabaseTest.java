@@ -26,9 +26,9 @@ class DatabaseTest {
   @Test
   void insertAndSelectTest() throws SQLException {
     long id = Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
-    CachedRowSet cachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
-    cachedRowSet.next();
-    String name = cachedRowSet.getString("name");
+    FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
+    fixedCachedRowSet.next();
+    String name = fixedCachedRowSet.getString("name");
 
     assertTrue(id >= 0);
     assertEquals("test", name);
@@ -48,11 +48,11 @@ class DatabaseTest {
 
     long id = Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
     int affectedRow = Database.getInstance().executeDML(testRepository.modify(TestModel.create(id, expectedName)));
-    CachedRowSet cachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
-    cachedRowSet.next();
+    FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
+    fixedCachedRowSet.next();
 
     assertEquals(1, affectedRow);
-    assertEquals(expectedName, cachedRowSet.getString("name"));
+    assertEquals(expectedName, fixedCachedRowSet.getString("name"));
   }
 
   @AfterAll
