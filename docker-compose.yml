@@ -7,4 +7,4 @@ services:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: test_db
     ports:
-      - "3371:3306"
+      - "3306:3306"
