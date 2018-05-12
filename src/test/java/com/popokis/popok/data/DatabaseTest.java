@@ -71,6 +71,7 @@ class DatabaseTest {
 
   @AfterAll
   static void tearDownAll() throws SQLException {
+    testRepository = null;
     DatabaseUtil.dropTestSchema();
   }
 }
