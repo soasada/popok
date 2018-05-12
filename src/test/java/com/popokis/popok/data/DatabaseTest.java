@@ -1,6 +1,9 @@
 package com.popokis.popok.data;
 
+import com.popokis.popok.serialization.Deserializator;
+import com.popokis.popok.serialization.db.ListDeserializator;
 import com.popokis.popok.util.data.DatabaseUtil;
+import com.popokis.popok.util.data.deserializator.TestModelDeserializator;
 import com.popokis.popok.util.data.model.TestModel;
 import com.popokis.popok.util.query.TestRepository;
 import org.junit.jupiter.api.AfterAll;
@@ -8,8 +11,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DatabaseTest {
@@ -52,6 +57,16 @@ class DatabaseTest {
 
     assertEquals(1, affectedRow);
     assertEquals(expectedName, fixedCachedRowSet.getString("name"));
+  }
+
+  @Test
+  void insertAndGetAllTest() throws SQLException {
+    Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
+    FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.all());
+    Deserializator<List<TestModel>, FixedCachedRowSet> deserializator = new ListDeserializator<>(new TestModelDeserializator());
+    List<TestModel> testModels = deserializator.deserialize(fixedCachedRowSet);
+
+    assertFalse(testModels.isEmpty());
   }
 
   @AfterAll
