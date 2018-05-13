@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PopokLoggerTest extends LoggerTemplateTests {
   @Test

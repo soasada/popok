@@ -58,21 +58,18 @@
             <groupId>com.google.auto.value</groupId>
             <artifactId>auto-value</artifactId>
             <version>1.6</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.auto.value</groupId>
             <artifactId>auto-value-annotations</artifactId>
             <version>1.6</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.auto</groupId>
             <artifactId>auto-common</artifactId>
             <version>0.10</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
