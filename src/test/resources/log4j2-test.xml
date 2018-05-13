@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" packages="org.apache.logging.log4j.core.layout, com.popokis.popok.log.layout">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <LoggerLayout properties="true"
+                        eventEol="true"
+                        locationInfo="true">
+                <!-- Additional Fields -->
+                <KeyValuePair key="project" value="popok-logger"/>
+                <KeyValuePair key="testing" value="enabled"/>
+                <KeyValuePair key="datetime" value="$${date:yyyy-MM-dd HH:mm:ss.SSS}"/>
+            </LoggerLayout>
+        </Console>
+
+        <ListAppender name="ListAppender">
+            <LoggerLayout properties="true"
+                        eventEol="true"
+                        locationInfo="true">
+                <!-- Additional Fields -->
+                <KeyValuePair key="project" value="popok-logger"/>
+                <KeyValuePair key="testing" value="enabled"/>
+                <KeyValuePair key="datetime" value="$${date:yyyy-MM-dd HH:mm:ss.SSS}"/>
+            </LoggerLayout>
+        </ListAppender>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="tests"/>
+        <Root level="ALL">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="ListAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
