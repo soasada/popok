@@ -10,7 +10,7 @@ public final class Route {
   private final String endpoint;
   private final HttpHandler handler;
 
-  public Route(HttpString verb, String endpoint, HttpHandler handler) {
+  private Route(HttpString verb, String endpoint, HttpHandler handler) {
     this.verb = verb;
     this.endpoint = endpoint;
     this.handler = new BlockingHandler(handler);
@@ -26,5 +26,9 @@ public final class Route {
 
   public HttpHandler handler() {
     return handler;
+  }
+
+  public static Route of(HttpString verb, String endpoint, HttpHandler handler) {
+    return new Route(verb, endpoint, handler);
   }
 }
