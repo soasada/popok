@@ -8,14 +8,14 @@ public final class CreateEmployeeTableQuery implements Query {
 
   @Override
   public String query() {
-    return "CREATE TABLE IF NOT EXISTS employee (id INT UNSIGNED NOT NULL AUTO_INCREMENT, " +
-        "name VARCHAR(255) NOT NULL, " +
-        "company_id INT UNSIGNED NOT NULL, " +
-        "PRIMARY KEY (id), " +
-        "INDEX fk_employee_company_idx (company_id ASC), " +
+    return "CREATE TABLE IF NOT EXISTS employee (e_id INT UNSIGNED NOT NULL AUTO_INCREMENT, " +
+        "e_name VARCHAR(255) NOT NULL, " +
+        "e_company_id INT UNSIGNED NOT NULL, " +
+        "PRIMARY KEY (e_id), " +
+        "INDEX fk_employee_company_idx (e_company_id ASC), " +
         "CONSTRAINT fk_employee_company " +
-        "FOREIGN KEY (company_id) " +
-        "REFERENCES company (id) " +
+        "FOREIGN KEY (e_company_id) " +
+        "REFERENCES company (c_id) " +
         "ON DELETE NO ACTION " +
         "ON UPDATE NO ACTION)";
   }

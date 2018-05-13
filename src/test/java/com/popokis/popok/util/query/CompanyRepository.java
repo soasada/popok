@@ -13,7 +13,7 @@ public final class CompanyRepository implements BasicRepository<Company> {
     return new Query() {
       @Override
       public String query() {
-        return "INSERT INTO company (name) VALUES(?)";
+        return "INSERT INTO company (c_name) VALUES(?)";
       }
 
       @Override
@@ -32,7 +32,7 @@ public final class CompanyRepository implements BasicRepository<Company> {
     return new Query() {
       @Override
       public String query() {
-        return "UPDATE company SET name = ? WHERE id = ?";
+        return "UPDATE company SET c_name = ? WHERE c_id = ?";
       }
 
       @Override
@@ -52,7 +52,7 @@ public final class CompanyRepository implements BasicRepository<Company> {
     return new Query() {
       @Override
       public String query() {
-        return "SELECT * FROM company WHERE id = ?";
+        return "SELECT * FROM company WHERE c_id = ?";
       }
 
       @Override
@@ -71,7 +71,7 @@ public final class CompanyRepository implements BasicRepository<Company> {
     return new Query() {
       @Override
       public String query() {
-        return "DELETE FROM company WHERE id = ? LIMIT 1";
+        return "DELETE FROM company WHERE c_id = ? LIMIT 1";
       }
 
       @Override

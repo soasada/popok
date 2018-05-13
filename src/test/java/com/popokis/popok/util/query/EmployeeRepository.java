@@ -13,7 +13,7 @@ public final class EmployeeRepository implements BasicRepository<Employee> {
     return new Query() {
       @Override
       public String query() {
-        return "INSERT INTO employee (name, company_id) VALUES(?, ?)";
+        return "INSERT INTO employee (e_name, e_company_id) VALUES(?, ?)";
       }
 
       @Override
@@ -33,7 +33,7 @@ public final class EmployeeRepository implements BasicRepository<Employee> {
     return new Query() {
       @Override
       public String query() {
-        return "UPDATE employee SET name = ?, company_id = ? WHERE id = ?";
+        return "UPDATE employee SET e_name = ?, e_company_id = ? WHERE e_id = ?";
       }
 
       @Override
@@ -54,7 +54,7 @@ public final class EmployeeRepository implements BasicRepository<Employee> {
     return new Query() {
       @Override
       public String query() {
-        return "SELECT * FROM employee WHERE id = ?";
+        return "SELECT * FROM employee WHERE e_id = ?";
       }
 
       @Override
@@ -73,7 +73,7 @@ public final class EmployeeRepository implements BasicRepository<Employee> {
     return new Query() {
       @Override
       public String query() {
-        return "DELETE FROM employee WHERE id = ? LIMIT 1";
+        return "DELETE FROM employee WHERE e_id = ? LIMIT 1";
       }
 
       @Override

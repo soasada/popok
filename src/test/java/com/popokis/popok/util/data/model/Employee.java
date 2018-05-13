@@ -11,9 +11,8 @@ public abstract class Employee {
   @JsonCreator
   public static Employee create(@Nullable Long id,
                                 @JsonProperty("name") String name,
-                                @JsonProperty("companyId") Long companyId,
-                                @Nullable Company company) {
-    return new AutoValue_Employee(id, name, companyId, company);
+                                @JsonProperty("companyId") Long companyId) {
+    return new AutoValue_Employee(id, name, companyId);
   }
 
   @Nullable
@@ -23,8 +22,6 @@ public abstract class Employee {
   @JsonProperty("name")
   public abstract String name();
 
+  @JsonProperty("companyId")
   public abstract Long companyId();
-
-  @JsonProperty("company")
-  public abstract Company company();
 }

@@ -5,25 +5,25 @@ import com.popokis.popok.data.Query;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public final class CompanyEmployeesQuery implements Query {
+public final class EmployeeCompanyQuery implements Query {
 
-  private final long companyId;
+  private final long employeeId;
 
-  public CompanyEmployeesQuery(long companyId) {
-    this.companyId = companyId;
+  public EmployeeCompanyQuery(long employeeId) {
+    this.employeeId = employeeId;
   }
 
   @Override
   public String query() {
     return "SELECT * FROM company " +
         "JOIN employee ON c_id = e_company_id " +
-        "WHERE c_id = ?";
+        "WHERE e_id = ?";
   }
 
   @Override
   public void parameters(PreparedStatement stm) {
     try {
-      stm.setLong(1, companyId);
+      stm.setLong(1, employeeId);
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
