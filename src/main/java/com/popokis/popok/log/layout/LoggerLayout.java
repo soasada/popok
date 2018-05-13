@@ -258,7 +258,7 @@ public final class LoggerLayout extends AbstractStringLayout {
   }
 
   /**
-   * Assambly the log data structure and then use Jackson to have a JSON output
+   * Assembly the log data structure and then use Jackson to have a JSON output
    * @param event
    * @return
    */
@@ -276,7 +276,6 @@ public final class LoggerLayout extends AbstractStringLayout {
       basicInfoLog.setAll(this.getContextStackList(event, mapper)); // NCD
     }
 
-    //return "YARRLOGLINE-FILENAME#" + basicInfoLog.toString() + this.eol;
     return basicInfoLog.toString() + this.eol;
   }
 
