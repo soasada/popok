@@ -3,11 +3,13 @@ package com.popokis.popok.data;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.util.data.DatabaseUtil;
 import com.popokis.popok.util.data.deserializator.CompanyResponseDeserializator;
+import com.popokis.popok.util.data.deserializator.CompanyResponseDeserializator2;
 import com.popokis.popok.util.data.deserializator.EmployeeResponseDeserializator;
 import com.popokis.popok.util.data.model.Company;
 import com.popokis.popok.util.data.model.Employee;
 import com.popokis.popok.util.http.CompanyResponse;
 import com.popokis.popok.util.http.EmployeeResponse;
+import com.popokis.popok.util.query.CompanyEmployeesAliasQuery;
 import com.popokis.popok.util.query.CompanyEmployeesQuery;
 import com.popokis.popok.util.query.CompanyRepository;
 import com.popokis.popok.util.query.EmployeeCompanyQuery;
@@ -62,6 +64,22 @@ class JoinTest {
     EmployeeResponse employeeResponse = deserializator.deserialize(rowSet);
 
     assertEquals("testCompany2", employeeResponse.company().name());
+  }
+
+  @Test
+  void getAllEmployeesForCompanyWithAliasesTest() throws SQLException {
+    long companyId = Database.getInstance().executeInsert(companyRepository.save(Company.create(null, "testCompany3")));
+    Database.getInstance().executeInsert(employeeRepository.save(Employee.create(null, "testEmployee5", companyId)));
+    Database.getInstance().executeInsert(employeeRepository.save(Employee.create(null, "testEmployee6", companyId)));
+
+    FixedCachedRowSet rowSet = Database.getInstance().executeQuery(new CompanyEmployeesAliasQuery(companyId));
+    rowSet.next();
+
+    Deserializator<CompanyResponse, FixedCachedRowSet> deserializator = new CompanyResponseDeserializator2();
+
+    CompanyResponse companyResponse = deserializator.deserialize(rowSet);
+
+    assertEquals(2, companyResponse.employees().size());
   }
 
   @AfterAll
