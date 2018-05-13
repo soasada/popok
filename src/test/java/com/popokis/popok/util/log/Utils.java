@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Utils {
+public final class Utils {
+
+  private Utils() {}
+
   /**
    * Parse a json string into a Map<String , String>
    * @param json string with json
