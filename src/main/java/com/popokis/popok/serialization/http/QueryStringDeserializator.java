@@ -23,14 +23,11 @@ public final class QueryStringDeserializator implements Deserializator<Map<Strin
     }
 
     return Arrays.stream(queryString.split("&"))
-        .map(QueryStringDeserializator::splitQueryParameter)
-        .collect(groupingBy(
-            Map.Entry::getKey,
-            LinkedHashMap::new,
-            mapping(Map.Entry::getValue, toList())));
+        .map(this::splitQueryParameter)
+        .collect(groupingBy(Map.Entry::getKey, LinkedHashMap::new, mapping(Map.Entry::getValue, toList())));
   }
 
-  private static Map.Entry<String, String> splitQueryParameter(String param) {
+  private Map.Entry<String, String> splitQueryParameter(String param) {
     final int equalIdx = param.indexOf("=");
     final String key = equalIdx > 0 ? param.substring(0, equalIdx) : param;
     final String value = equalIdx > 0 && param.length() > equalIdx + 1 ? param.substring(equalIdx + 1) : null;
