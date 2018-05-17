@@ -4,28 +4,28 @@ import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;
 
-import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
-public final class JsonClient implements Client<String> {
+public final class SimpleAsyncClient implements Client<CompletableFuture<HttpResponse<String>>> {
 
   private final Duration timeout;
 
-  private JsonClient() {
+  private SimpleAsyncClient() {
     timeout = Duration.ofMinutes(2);
   }
 
   private static class Holder {
-    private static final Client<String> INSTANCE = new JsonClient();
+    private static final Client<CompletableFuture<HttpResponse<String>>> INSTANCE = new SimpleAsyncClient();
   }
 
-  public static Client<String> getInstance() {
+  public static Client<CompletableFuture<HttpResponse<String>>> getInstance() {
     return Holder.INSTANCE;
   }
 
   @Override
-  public String get(String url) {
+  public CompletableFuture<HttpResponse<String>> get(String url) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .timeout(timeout)
@@ -35,7 +35,7 @@ public final class JsonClient implements Client<String> {
   }
 
   @Override
-  public String post(String url, String jsonBody) {
+  public CompletableFuture<HttpResponse<String>> post(String url, String jsonBody) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .timeout(timeout)
@@ -46,14 +46,8 @@ public final class JsonClient implements Client<String> {
     return httpRequest(request);
   }
 
-  private String httpRequest(HttpRequest request) {
+  private CompletableFuture<HttpResponse<String>> httpRequest(HttpRequest request) {
     HttpClient client = HttpClient.newHttpClient();
-
-    try {
-      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandler.asString());
-      return response.body();
-    } catch (IOException | InterruptedException e) {
-      throw new RuntimeException(e);
-    }
+    return client.sendAsync(request, HttpResponse.BodyHandler.asString());
   }
 }

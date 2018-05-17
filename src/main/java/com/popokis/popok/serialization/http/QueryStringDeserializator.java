@@ -25,12 +25,12 @@ public final class QueryStringDeserializator implements Deserializator<Map<Strin
     return Arrays.stream(queryString.split("&"))
         .map(QueryStringDeserializator::splitQueryParameter)
         .collect(groupingBy(
-            AbstractMap.SimpleImmutableEntry::getKey,
+            Map.Entry::getKey,
             LinkedHashMap::new,
             mapping(Map.Entry::getValue, toList())));
   }
 
-  private static AbstractMap.SimpleImmutableEntry<String, String> splitQueryParameter(String param) {
+  private static Map.Entry<String, String> splitQueryParameter(String param) {
     final int equalIdx = param.indexOf("=");
     final String key = equalIdx > 0 ? param.substring(0, equalIdx) : param;
     final String value = equalIdx > 0 && param.length() > equalIdx + 1 ? param.substring(equalIdx + 1) : null;

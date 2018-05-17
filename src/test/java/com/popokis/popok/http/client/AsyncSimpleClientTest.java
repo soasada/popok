@@ -11,14 +11,14 @@ import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class AsyncJsonClientTest {
+class AsyncSimpleClientTest {
 
   private static Client<CompletableFuture<HttpResponse<String>>> ASYNC_CLIENT;
   private static FakeServer FAKE_SERVER;
 
   @BeforeAll
   static void initAll() {
-    ASYNC_CLIENT = AsyncJsonClient.getInstance();
+    ASYNC_CLIENT = SimpleAsyncClient.getInstance();
     FAKE_SERVER = new FakeServer();
   }
 

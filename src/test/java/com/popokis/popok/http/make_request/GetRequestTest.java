@@ -1,7 +1,7 @@
 package com.popokis.popok.http.make_request;
 
-import com.popokis.popok.http.client.AsyncJsonClient;
-import com.popokis.popok.http.client.JsonClient;
+import com.popokis.popok.http.client.SimpleAsyncClient;
+import com.popokis.popok.http.client.SimpleClient;
 import com.popokis.popok.util.http.FakeServer;
 import jdk.incubator.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
@@ -24,7 +24,7 @@ class GetRequestTest {
 
   @Test
   void asyncGetRequestTest() {
-    MakeRequest<CompletableFuture<HttpResponse<String>>> asyncGetRequest = new GetRequest<>(AsyncJsonClient.getInstance());
+    MakeRequest<CompletableFuture<HttpResponse<String>>> asyncGetRequest = new GetRequest<>(SimpleAsyncClient.getInstance());
 
     String payload = "";
 
@@ -39,7 +39,7 @@ class GetRequestTest {
 
   @Test
   void syncGetRequestTest() {
-    MakeRequest<String> syncPostRequest = new GetRequest<>(JsonClient.getInstance());
+    MakeRequest<String> syncPostRequest = new GetRequest<>(SimpleClient.getInstance());
     String payload = syncPostRequest.to(FAKE_SERVER.url() + "/fake/get", "key=popokis");
 
     assertTrue(payload.contains("popokis"));

@@ -7,11 +7,11 @@ import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class PopokResponse<S> {
+public abstract class RestResponse<S> {
   @JsonCreator
-  public static <S> PopokResponse<S> create(@JsonProperty("response") Response response,
-                                            @Nullable @JsonProperty("payload") S payload) {
-    return new AutoValue_PopokResponse<>(response, payload);
+  public static <S> RestResponse<S> create(@JsonProperty("response") Response response,
+                                           @Nullable @JsonProperty("payload") S payload) {
+    return new AutoValue_RestResponse<>(response, payload);
   }
 
   @JsonProperty("response")
