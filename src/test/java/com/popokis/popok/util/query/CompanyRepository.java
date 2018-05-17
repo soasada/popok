@@ -17,7 +17,7 @@ public final class CompanyRepository implements BasicRepository<Company> {
   private final QueryGenerator queryGenerator;
 
   public CompanyRepository() {
-    this.tableName = "company";
+    tableName = "company";
     queryGenerator = new QueryGenerator("c_");
   }
 

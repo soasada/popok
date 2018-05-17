@@ -2,18 +2,31 @@ package com.popokis.popok.util.query;
 
 import com.popokis.popok.data.BasicRepository;
 import com.popokis.popok.data.Query;
+import com.popokis.popok.data.QueryGenerator;
 import com.popokis.popok.util.data.model.Employee;
+import com.popokis.popok.util.query.common.DefaultAllQuery;
+import com.popokis.popok.util.query.common.DefaultDeleteQuery;
+import com.popokis.popok.util.query.common.DefaultFindQuery;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public final class EmployeeRepository implements BasicRepository<Employee> {
+
+  private final String tableName;
+  private final QueryGenerator queryGenerator;
+
+  public EmployeeRepository() {
+    tableName = "employee";
+    queryGenerator = new QueryGenerator("e_");
+  }
+
   @Override
   public Query save(Employee employee) {
     return new Query() {
       @Override
       public String query() {
-        return "INSERT INTO employee (e_name, e_company_id) VALUES(?, ?)";
+        return "INSERT INTO " + tableName + " (" + queryGenerator.putPrefix("name", "company_id") + ") VALUES(?, ?)";
       }
 
       @Override
@@ -33,7 +46,8 @@ public final class EmployeeRepository implements BasicRepository<Employee> {
     return new Query() {
       @Override
       public String query() {
-        return "UPDATE employee SET e_name = ?, e_company_id = ? WHERE e_id = ?";
+        return "UPDATE " + tableName + " SET " + queryGenerator.putQuestionMark("name", "company_id") + " WHERE " +
+            queryGenerator.putQuestionMark("id");
       }
 
       @Override
@@ -51,54 +65,16 @@ public final class EmployeeRepository implements BasicRepository<Employee> {
 
   @Override
   public Query find(long id) {
-    return new Query() {
-      @Override
-      public String query() {
-        return "SELECT * FROM employee WHERE e_id = ?";
-      }
-
-      @Override
-      public void parameters(PreparedStatement stm) {
-        try {
-          stm.setLong(1, id);
-        } catch (SQLException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    };
+    return new DefaultFindQuery(id, tableName, queryGenerator);
   }
 
   @Override
   public Query remove(long id) {
-    return new Query() {
-      @Override
-      public String query() {
-        return "DELETE FROM employee WHERE e_id = ? LIMIT 1";
-      }
-
-      @Override
-      public void parameters(PreparedStatement stm) {
-        try {
-          stm.setLong(1, id);
-        } catch (SQLException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    };
+    return new DefaultDeleteQuery(id, tableName, queryGenerator);
   }
 
   @Override
   public Query all() {
-    return new Query() {
-      @Override
-      public String query() {
-        return "SELECT * FROM employee";
-      }
-
-      @Override
-      public void parameters(PreparedStatement stm) {
-
-      }
-    };
+    return new DefaultAllQuery(tableName);
   }
 }
