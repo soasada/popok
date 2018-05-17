@@ -29,7 +29,7 @@ class DatabaseTest {
 
   @Test
   void insertAndSelectTest() throws SQLException {
-    long id = Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
+    long id = insert();
     FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
     fixedCachedRowSet.next();
     String name = fixedCachedRowSet.getString("name");
@@ -40,7 +40,7 @@ class DatabaseTest {
 
   @Test
   void insertAndDeleteTest() throws SQLException {
-    long id = Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
+    long id = insert();
     int affectedRow = Database.getInstance().executeDML(testRepository.remove(id));
 
     assertEquals(1, affectedRow);
@@ -50,7 +50,7 @@ class DatabaseTest {
   void insertAndUpdateTest() throws SQLException {
     String expectedName = "test2";
 
-    long id = Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
+    long id = insert();
     int affectedRow = Database.getInstance().executeDML(testRepository.modify(TestModel.create(id, expectedName)));
     FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
     fixedCachedRowSet.next();
@@ -61,7 +61,7 @@ class DatabaseTest {
 
   @Test
   void insertAndGetAllTest() throws SQLException {
-    Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
+    insert();
     FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.all());
     Deserializator<List<TestModel>, FixedCachedRowSet> deserializator = new ListDeserializator<>(new TestModelDeserializator());
     List<TestModel> testModels = deserializator.deserialize(fixedCachedRowSet);
@@ -73,5 +73,9 @@ class DatabaseTest {
   static void tearDownAll() throws SQLException {
     testRepository = null;
     DatabaseUtil.dropTestSchema();
+  }
+
+  private long insert() throws SQLException {
+    return Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
   }
 }
