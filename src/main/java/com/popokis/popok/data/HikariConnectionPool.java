@@ -8,7 +8,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-final class HikariConnectionPool {
+final class HikariConnectionPool implements ConnectionPool<HikariDataSource> {
 
   private final HikariDataSource dataSource;
 
@@ -26,15 +26,25 @@ final class HikariConnectionPool {
   }
 
   private static class Holder {
-    private static final HikariConnectionPool INSTANCE = new HikariConnectionPool();
+    private static final ConnectionPool<HikariDataSource> INSTANCE = new HikariConnectionPool();
   }
 
-  static HikariConnectionPool getInstance() {
+  static ConnectionPool<HikariDataSource> getInstance() {
     return Holder.INSTANCE;
   }
 
-  Connection getConnection() throws SQLException {
-    return dataSource.getConnection();
+  @Override
+  public HikariDataSource pool() {
+    return dataSource;
+  }
+
+  @Override
+  public Connection getConnection() {
+    try {
+      return dataSource.getConnection();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private HikariConfig getConfig(Config config) {

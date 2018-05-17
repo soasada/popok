@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class JsonClientTest {
+class SimpleClientTest {
 
   private static Client<String> CLIENT;
   private static FakeServer FAKE_SERVER;
 
   @BeforeAll
   static void initAll() {
-    CLIENT = JsonClient.getInstance();
+    CLIENT = SimpleClient.getInstance();
     FAKE_SERVER = new FakeServer();
   }
 

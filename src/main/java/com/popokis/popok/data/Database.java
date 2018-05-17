@@ -1,5 +1,7 @@
 package com.popokis.popok.data;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
 import java.sql.Connection;
@@ -10,7 +12,7 @@ import java.sql.Statement;
 
 public final class Database {
 
-  private final HikariConnectionPool connectionPool;
+  private final ConnectionPool<HikariDataSource> connectionPool;
 
   private Database() {
     connectionPool = HikariConnectionPool.getInstance();
@@ -52,8 +54,8 @@ public final class Database {
     return rowsAffected;
   }
 
-  public CachedRowSet executeQuery(Query query) throws SQLException {
-    CachedRowSet result;
+  public FixedCachedRowSet executeQuery(Query query) throws SQLException {
+    FixedCachedRowSet result;
 
     try (Connection connection = connectionPool.getConnection();
          PreparedStatement preparedStatement = connection.prepareStatement(query.query())) {
@@ -63,7 +65,7 @@ public final class Database {
         CachedRowSet cachedRowSet = RowSetProvider.newFactory().createCachedRowSet();
         cachedRowSet.populate(resultSet);
 
-        result = cachedRowSet;
+        result = new FixedCachedRowSet(cachedRowSet);
       }
     }
 

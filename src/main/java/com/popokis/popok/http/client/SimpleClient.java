@@ -4,28 +4,28 @@ import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
 
-public final class AsyncJsonClient implements Client<CompletableFuture<HttpResponse<String>>> {
+public final class SimpleClient implements Client<String> {
 
   private final Duration timeout;
 
-  private AsyncJsonClient() {
+  private SimpleClient() {
     timeout = Duration.ofMinutes(2);
   }
 
   private static class Holder {
-    private static final Client<CompletableFuture<HttpResponse<String>>> INSTANCE = new AsyncJsonClient();
+    private static final Client<String> INSTANCE = new SimpleClient();
   }
 
-  public static Client<CompletableFuture<HttpResponse<String>>> getInstance() {
+  public static Client<String> getInstance() {
     return Holder.INSTANCE;
   }
 
   @Override
-  public CompletableFuture<HttpResponse<String>> get(String url) {
+  public String get(String url) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .timeout(timeout)
@@ -35,7 +35,7 @@ public final class AsyncJsonClient implements Client<CompletableFuture<HttpRespo
   }
 
   @Override
-  public CompletableFuture<HttpResponse<String>> post(String url, String jsonBody) {
+  public String post(String url, String jsonBody) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .timeout(timeout)
@@ -46,8 +46,14 @@ public final class AsyncJsonClient implements Client<CompletableFuture<HttpRespo
     return httpRequest(request);
   }
 
-  private CompletableFuture<HttpResponse<String>> httpRequest(HttpRequest request) {
+  private String httpRequest(HttpRequest request) {
     HttpClient client = HttpClient.newHttpClient();
-    return client.sendAsync(request, HttpResponse.BodyHandler.asString());
+
+    try {
+      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandler.asString());
+      return response.body();
+    } catch (IOException | InterruptedException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

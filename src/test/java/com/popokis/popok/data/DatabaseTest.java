@@ -1,16 +1,20 @@
 package com.popokis.popok.data;
 
+import com.popokis.popok.serialization.Deserializator;
+import com.popokis.popok.serialization.db.ListDeserializator;
 import com.popokis.popok.util.data.DatabaseUtil;
+import com.popokis.popok.util.data.deserializator.TestModelDeserializator;
 import com.popokis.popok.util.data.model.TestModel;
 import com.popokis.popok.util.query.TestRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.sql.rowset.CachedRowSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DatabaseTest {
@@ -26,9 +30,9 @@ class DatabaseTest {
   @Test
   void insertAndSelectTest() throws SQLException {
     long id = Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
-    CachedRowSet cachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
-    cachedRowSet.next();
-    String name = cachedRowSet.getString("name");
+    FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
+    fixedCachedRowSet.next();
+    String name = fixedCachedRowSet.getString("name");
 
     assertTrue(id >= 0);
     assertEquals("test", name);
@@ -48,15 +52,26 @@ class DatabaseTest {
 
     long id = Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
     int affectedRow = Database.getInstance().executeDML(testRepository.modify(TestModel.create(id, expectedName)));
-    CachedRowSet cachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
-    cachedRowSet.next();
+    FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
+    fixedCachedRowSet.next();
 
     assertEquals(1, affectedRow);
-    assertEquals(expectedName, cachedRowSet.getString("name"));
+    assertEquals(expectedName, fixedCachedRowSet.getString("name"));
+  }
+
+  @Test
+  void insertAndGetAllTest() throws SQLException {
+    Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
+    FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.all());
+    Deserializator<List<TestModel>, FixedCachedRowSet> deserializator = new ListDeserializator<>(new TestModelDeserializator());
+    List<TestModel> testModels = deserializator.deserialize(fixedCachedRowSet);
+
+    assertFalse(testModels.isEmpty());
   }
 
   @AfterAll
   static void tearDownAll() throws SQLException {
+    testRepository = null;
     DatabaseUtil.dropTestSchema();
   }
 }

@@ -9,9 +9,9 @@ public final class CreateCompanyTableQuery implements Query {
   @Override
   public String query() {
     return "CREATE TABLE IF NOT EXISTS company (" +
-        "id INT UNSIGNED NOT NULL AUTO_INCREMENT, " +
-        "name VARCHAR(255) NOT NULL, " +
-        "PRIMARY KEY (id))";
+        "c_id INT UNSIGNED NOT NULL AUTO_INCREMENT, " +
+        "c_name VARCHAR(255) NOT NULL, " +
+        "PRIMARY KEY (c_id))";
   }
 
   @Override
