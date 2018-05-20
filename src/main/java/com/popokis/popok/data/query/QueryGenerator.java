@@ -1,4 +1,4 @@
-package com.popokis.popok.data;
+package com.popokis.popok.data.query;
 
 public final class QueryGenerator {
 

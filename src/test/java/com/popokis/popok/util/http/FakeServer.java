@@ -20,7 +20,8 @@ public final class FakeServer {
   public FakeServer() {
     List<Route> routes = List.of(
         Route.of(Methods.GET, FAKE_GET, new FakeTextHandler(new GetExtractor())),
-        Route.of(Methods.POST, FAKE_POST, new FakeTextHandler(new PostExtractor())));
+        Route.of(Methods.POST, FAKE_POST, new FakeTextHandler(new PostExtractor()))
+    );
 
     server = new SimpleServer(8080, "0.0.0.0", routes);
   }

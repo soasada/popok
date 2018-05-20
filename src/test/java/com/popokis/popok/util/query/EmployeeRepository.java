@@ -1,12 +1,12 @@
 package com.popokis.popok.util.query;
 
-import com.popokis.popok.data.BasicRepository;
-import com.popokis.popok.data.Query;
-import com.popokis.popok.data.QueryGenerator;
+import com.popokis.popok.data.query.BasicRepository;
+import com.popokis.popok.data.query.DefaultAllQuery;
+import com.popokis.popok.data.query.DefaultDeleteQuery;
+import com.popokis.popok.data.query.DefaultFindQuery;
+import com.popokis.popok.data.query.Query;
+import com.popokis.popok.data.query.QueryGenerator;
 import com.popokis.popok.util.data.model.Employee;
-import com.popokis.popok.util.query.common.DefaultAllQuery;
-import com.popokis.popok.util.query.common.DefaultDeleteQuery;
-import com.popokis.popok.util.query.common.DefaultFindQuery;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

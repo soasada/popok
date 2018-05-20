@@ -1,5 +1,6 @@
 package com.popokis.popok.data;
 
+import com.popokis.popok.data.query.BasicRepository;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.serialization.db.ListDeserializator;
 import com.popokis.popok.util.data.DatabaseUtil;

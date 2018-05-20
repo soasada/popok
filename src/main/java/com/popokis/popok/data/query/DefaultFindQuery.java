@@ -1,18 +1,15 @@
-package com.popokis.popok.util.query.common;
-
-import com.popokis.popok.data.Query;
-import com.popokis.popok.data.QueryGenerator;
+package com.popokis.popok.data.query;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public final class DefaultDeleteQuery implements Query {
+public final class DefaultFindQuery implements Query {
 
   private final long id;
   private final String tableName;
   private final QueryGenerator queryGenerator;
 
-  public DefaultDeleteQuery(long id, String tableName, QueryGenerator queryGenerator) {
+  public DefaultFindQuery(long id, String tableName, QueryGenerator queryGenerator) {
     this.id = id;
     this.tableName = tableName;
     this.queryGenerator = queryGenerator;
@@ -20,7 +17,7 @@ public final class DefaultDeleteQuery implements Query {
 
   @Override
   public String query() {
-    return "DELETE FROM " + tableName + " WHERE " + queryGenerator.putQuestionMark("id") + " LIMIT 1";
+    return "SELECT * FROM " + tableName + " WHERE " + queryGenerator.putQuestionMark("id");
   }
 
   @Override

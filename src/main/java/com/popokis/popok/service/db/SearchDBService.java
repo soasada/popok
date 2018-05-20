@@ -1,8 +1,8 @@
 package com.popokis.popok.service.db;
 
-import com.popokis.popok.data.BasicRepository;
 import com.popokis.popok.data.Database;
 import com.popokis.popok.data.FixedCachedRowSet;
+import com.popokis.popok.data.query.BasicRepository;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.service.Service;
 

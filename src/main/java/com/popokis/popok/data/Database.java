@@ -1,5 +1,6 @@
 package com.popokis.popok.data;
 
+import com.popokis.popok.data.query.Query;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.rowset.CachedRowSet;

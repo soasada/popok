@@ -1,6 +1,6 @@
 package com.popokis.popok.util.query.schema;
 
-import com.popokis.popok.data.Query;
+import com.popokis.popok.data.query.Query;
 
 import java.sql.PreparedStatement;
 
