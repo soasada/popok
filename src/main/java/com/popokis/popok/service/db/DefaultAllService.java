@@ -26,11 +26,7 @@ public final class DefaultAllService<T> implements Service<Void, List<T>> {
   public List<T> call(Void payload) {
     FixedCachedRowSet fixedCachedRowSet;
 
-    try {
-      fixedCachedRowSet = db.executeQuery(repository.all());
-      return listDeserializator.deserialize(fixedCachedRowSet);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+    fixedCachedRowSet = db.executeQuery(repository.all());
+    return listDeserializator.deserialize(fixedCachedRowSet);
   }
 }

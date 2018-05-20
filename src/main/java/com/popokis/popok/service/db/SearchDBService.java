@@ -24,17 +24,11 @@ public final class SearchDBService<T> implements Service<Long, T> {
   public T call(Long id) {
     FixedCachedRowSet fixedCachedRowSet;
 
-    try {
-      fixedCachedRowSet = db.executeQuery(repository.find(id));
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+    fixedCachedRowSet = db.executeQuery(repository.find(id));
 
     if (!fixedCachedRowSet.isBeforeFirst()) {
       throw new RuntimeException("Not found");
     }
-
-    fixedCachedRowSet.next();
 
     return deserializator.deserialize(fixedCachedRowSet);
   }

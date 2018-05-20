@@ -18,10 +18,6 @@ public final class InsertDBService<T> implements Service<T, Long> {
 
   @Override
   public Long call(T model) {
-    try {
-      return db.executeInsert(repository.save(model));
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+    return db.executeInsert(repository.save(model));
   }
 }

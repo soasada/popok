@@ -18,10 +18,6 @@ public final class RemoveDBService<T> implements Service<Long, Integer> {
 
   @Override
   public Integer call(Long id) {
-    try {
-      return db.executeDML(repository.remove(id));
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+    return db.executeDML(repository.remove(id));
   }
 }

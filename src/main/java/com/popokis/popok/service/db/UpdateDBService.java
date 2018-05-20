@@ -18,10 +18,6 @@ public final class UpdateDBService<T> implements Service<T, Integer> {
 
   @Override
   public Integer call(T model) {
-    try {
-      return db.executeDML(repository.modify(model));
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+    return db.executeDML(repository.modify(model));
   }
 }

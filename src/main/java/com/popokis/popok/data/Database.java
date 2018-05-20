@@ -10,6 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Allow to execute Query objects directly with the database. Use a connection pool by default for
+ * connection reuse and performance improvement.
+ *
+ * @since 0.1.0
+ */
 public final class Database {
 
   private final ConnectionPool<HikariDataSource> connectionPool;
@@ -26,7 +32,7 @@ public final class Database {
     return Holder.INSTANCE;
   }
 
-  public long executeInsert(Query query) throws SQLException {
+  public long executeInsert(Query query) {
     long generatedId;
 
     try (Connection connection = connectionPool.getConnection();
@@ -37,24 +43,28 @@ public final class Database {
       try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
         generatedId = generateId(resultSet);
       }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
     }
 
     return generatedId;
   }
 
-  public int executeDML(Query query) throws SQLException {
+  public int executeDML(Query query) {
     int rowsAffected;
 
     try (Connection connection = connectionPool.getConnection();
          PreparedStatement preparedStatement = connection.prepareStatement(query.query())) {
       query.parameters(preparedStatement);
       rowsAffected = preparedStatement.executeUpdate();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
     }
 
     return rowsAffected;
   }
 
-  public FixedCachedRowSet executeQuery(Query query) throws SQLException {
+  public FixedCachedRowSet executeQuery(Query query) {
     FixedCachedRowSet result;
 
     try (Connection connection = connectionPool.getConnection();
@@ -67,6 +77,8 @@ public final class Database {
 
         result = new FixedCachedRowSet(cachedRowSet);
       }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
     }
 
     return result;
