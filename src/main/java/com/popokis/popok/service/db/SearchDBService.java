@@ -6,8 +6,6 @@ import com.popokis.popok.data.FixedCachedRowSet;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.service.Service;
 
-import java.sql.SQLException;
-
 public final class SearchDBService<T> implements Service<Long, T> {
 
   private final Database db;

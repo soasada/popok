@@ -10,7 +10,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,13 +21,13 @@ class DatabaseTest {
   private static BasicRepository<TestModel> testRepository;
 
   @BeforeAll
-  static void initAll() throws SQLException {
+  static void initAll() {
     testRepository = new TestRepository();
     DatabaseUtil.createTestSchema();
   }
 
   @Test
-  void insertAndSelectTest() throws SQLException {
+  void insertAndSelectTest() {
     long id = insert();
     FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
     fixedCachedRowSet.next();
@@ -39,7 +38,7 @@ class DatabaseTest {
   }
 
   @Test
-  void insertAndDeleteTest() throws SQLException {
+  void insertAndDeleteTest() {
     long id = insert();
     int affectedRow = Database.getInstance().executeDML(testRepository.remove(id));
 
@@ -47,7 +46,7 @@ class DatabaseTest {
   }
 
   @Test
-  void insertAndUpdateTest() throws SQLException {
+  void insertAndUpdateTest() {
     String expectedName = "test2";
 
     long id = insert();
@@ -60,7 +59,7 @@ class DatabaseTest {
   }
 
   @Test
-  void insertAndGetAllTest() throws SQLException {
+  void insertAndGetAllTest() {
     insert();
     FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.all());
     Deserializator<List<TestModel>, FixedCachedRowSet> deserializator = new ListDeserializator<>(new TestModelDeserializator());
@@ -70,12 +69,12 @@ class DatabaseTest {
   }
 
   @AfterAll
-  static void tearDownAll() throws SQLException {
+  static void tearDownAll() {
     testRepository = null;
     DatabaseUtil.dropTestSchema();
   }
 
-  private long insert() throws SQLException {
+  private long insert() {
     return Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
   }
 }

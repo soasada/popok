@@ -4,8 +4,6 @@ import com.popokis.popok.data.BasicRepository;
 import com.popokis.popok.data.Database;
 import com.popokis.popok.service.Service;
 
-import java.sql.SQLException;
-
 public final class InsertDBService<T> implements Service<T, Long> {
 
   private final Database db;

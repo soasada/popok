@@ -7,7 +7,6 @@ import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.serialization.db.ListDeserializator;
 import com.popokis.popok.service.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public final class DefaultAllService<T> implements Service<Void, List<T>> {

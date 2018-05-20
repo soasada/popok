@@ -18,8 +18,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JoinTest {
@@ -28,14 +26,14 @@ class JoinTest {
   private static BasicRepository<Employee> employeeRepository;
 
   @BeforeAll
-  static void initAll() throws SQLException {
+  static void initAll() {
     companyRepository = new CompanyRepository();
     employeeRepository = new EmployeeRepository();
     DatabaseUtil.createTestSchema();
   }
 
   @Test
-  void getAllEmployeesForCompanyTest() throws SQLException {
+  void getAllEmployeesForCompanyTest() {
     long companyId = Database.getInstance().executeInsert(companyRepository.save(Company.create(null, "testCompany")));
     Database.getInstance().executeInsert(employeeRepository.save(Employee.create(null, "testEmployee1", companyId)));
     Database.getInstance().executeInsert(employeeRepository.save(Employee.create(null, "testEmployee2", companyId)));
@@ -52,7 +50,7 @@ class JoinTest {
   }
 
   @Test
-  void getEmployeeWithCompanyTest() throws SQLException {
+  void getEmployeeWithCompanyTest() {
     long companyId = Database.getInstance().executeInsert(companyRepository.save(Company.create(null, "testCompany2")));
     long employeeId = Database.getInstance().executeInsert(employeeRepository.save(Employee.create(null, "testEmployee4", companyId)));
 
@@ -67,7 +65,7 @@ class JoinTest {
   }
 
   @Test
-  void getAllEmployeesForCompanyWithAliasesTest() throws SQLException {
+  void getAllEmployeesForCompanyWithAliasesTest() {
     long companyId = Database.getInstance().executeInsert(companyRepository.save(Company.create(null, "testCompany3")));
     Database.getInstance().executeInsert(employeeRepository.save(Employee.create(null, "testEmployee5", companyId)));
     Database.getInstance().executeInsert(employeeRepository.save(Employee.create(null, "testEmployee6", companyId)));
@@ -83,7 +81,7 @@ class JoinTest {
   }
 
   @AfterAll
-  static void tearDownAll() throws SQLException {
+  static void tearDownAll() {
     companyRepository = null;
     employeeRepository = null;
     DatabaseUtil.dropTestSchema();
