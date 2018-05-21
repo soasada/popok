@@ -7,6 +7,7 @@ import com.popokis.popok.http.extractor.PostExtractor;
 import com.popokis.popok.http.manipulator.BasicManipulator;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.serialization.json.JacksonDeserializator;
+import com.popokis.popok.service.db.DefaultAllService;
 import com.popokis.popok.service.db.InsertDBService;
 import com.popokis.popok.service.db.RemoveDBService;
 import com.popokis.popok.service.db.SearchDBService;
@@ -16,7 +17,7 @@ import com.popokis.popok.util.validator.IdValidator;
 import com.popokis.popok.util.validator.Validator;
 import io.undertow.server.HttpHandler;
 
-public final class CRUDHandlerFactory<T> {
+public final class BasicHandlerFactory<T> {
 
   private final Validator<T> createValidator;
   private final Validator<T> updateValidator;
@@ -25,12 +26,12 @@ public final class CRUDHandlerFactory<T> {
   private final BasicRepository<T> repository;
   private final Deserializator<T, FixedCachedRowSet> databaseDeserializator;
 
-  public CRUDHandlerFactory(Validator<T> createValidator,
-                            Validator<T> updateValidator,
-                            String loggerName,
-                            Class<T> requestType,
-                            BasicRepository<T> repository,
-                            Deserializator<T, FixedCachedRowSet> databaseDeserializator) {
+  public BasicHandlerFactory(Validator<T> createValidator,
+                             Validator<T> updateValidator,
+                             String loggerName,
+                             Class<T> requestType,
+                             BasicRepository<T> repository,
+                             Deserializator<T, FixedCachedRowSet> databaseDeserializator) {
     this.createValidator = createValidator;
     this.updateValidator = updateValidator;
     this.loggerName = loggerName;
@@ -89,5 +90,17 @@ public final class CRUDHandlerFactory<T> {
         object -> "",
         new BasicManipulator<>()
     );
+  }
+
+  public HttpHandler all() {
+    return new SyncHandler<>(
+        e -> "",
+        loggerName,
+        s -> null,
+        new BasicValidator<>(),
+        new BasicManipulator<>(),
+        new DefaultAllService<>(repository, databaseDeserializator),
+        object -> "",
+        new BasicManipulator<>());
   }
 }
