@@ -4,7 +4,6 @@ import com.popokis.popok.data.FixedCachedRowSet;
 import com.popokis.popok.data.query.BasicRepository;
 import com.popokis.popok.http.extractor.IdExtractor;
 import com.popokis.popok.http.extractor.PostExtractor;
-import com.popokis.popok.http.manipulator.BasicManipulator;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.serialization.json.JacksonDeserializator;
 import com.popokis.popok.service.db.DefaultAllService;
@@ -41,66 +40,38 @@ public final class BasicHandlerFactory<T> {
   }
 
   public HttpHandler create() {
-    return new SyncHandler<>(
-        new PostExtractor(),
-        loggerName,
-        new JacksonDeserializator<>(requestType),
-        createValidator,
-        new BasicManipulator<>(),
-        new InsertDBService<>(repository),
-        object -> "",
-        new BasicManipulator<>()
-    );
+    return new SyncHandler.Builder<>(loggerName, new InsertDBService<>(repository))
+        .extractor(new PostExtractor())
+        .requestDeserializator(new JacksonDeserializator<>(requestType))
+        .requestValidator(createValidator)
+        .build();
   }
 
   public HttpHandler update() {
-    return new SyncHandler<>(
-        new PostExtractor(),
-        loggerName,
-        new JacksonDeserializator<>(requestType),
-        updateValidator,
-        new BasicManipulator<>(),
-        new UpdateDBService<>(repository),
-        object -> "",
-        new BasicManipulator<>()
-    );
+    return new SyncHandler.Builder<>(loggerName, new UpdateDBService<>(repository))
+        .extractor(new PostExtractor())
+        .requestDeserializator(new JacksonDeserializator<>(requestType))
+        .requestValidator(updateValidator)
+        .build();
   }
 
   public HttpHandler remove() {
-    return new SyncHandler<>(
-        new IdExtractor(),
-        loggerName,
-        Long::parseLong,
-        new IdValidator(new BasicValidator<>()),
-        new BasicManipulator<>(),
-        new RemoveDBService<>(repository),
-        object -> "",
-        new BasicManipulator<>()
-    );
+    return new SyncHandler.Builder<>(loggerName, new RemoveDBService<>(repository))
+        .extractor(new IdExtractor())
+        .requestDeserializator(Long::parseLong)
+        .requestValidator(new IdValidator(new BasicValidator<>()))
+        .build();
   }
 
   public HttpHandler search() {
-    return new SyncHandler<>(
-        new IdExtractor(),
-        loggerName,
-        Long::parseLong,
-        new IdValidator(new BasicValidator<>()),
-        new BasicManipulator<>(),
-        new SearchDBService<>(repository, databaseDeserializator),
-        object -> "",
-        new BasicManipulator<>()
-    );
+    return new SyncHandler.Builder<>(loggerName, new SearchDBService<>(repository, databaseDeserializator))
+        .extractor(new IdExtractor())
+        .requestDeserializator(Long::parseLong)
+        .requestValidator(new IdValidator(new BasicValidator<>()))
+        .build();
   }
 
   public HttpHandler all() {
-    return new SyncHandler<>(
-        e -> "",
-        loggerName,
-        s -> null,
-        new BasicValidator<>(),
-        new BasicManipulator<>(),
-        new DefaultAllService<>(repository, databaseDeserializator),
-        object -> "",
-        new BasicManipulator<>());
+    return new SyncHandler.Builder<>(loggerName, new DefaultAllService<>(repository, databaseDeserializator)).build();
   }
 }
