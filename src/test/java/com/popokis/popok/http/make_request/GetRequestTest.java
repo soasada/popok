@@ -2,7 +2,8 @@ package com.popokis.popok.http.make_request;
 
 import com.popokis.popok.http.client.SimpleAsyncClient;
 import com.popokis.popok.http.client.SimpleClient;
-import com.popokis.popok.util.http.FakeServer;
+import com.popokis.popok.http.server.SimpleServer;
+import com.popokis.popok.util.http.TestingRouter;
 import jdk.incubator.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,11 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GetRequestTest {
 
-  private static FakeServer FAKE_SERVER;
+  private static SimpleServer TESTING_SERVER;
 
   @BeforeAll
   static void initAll() {
-    FAKE_SERVER = new FakeServer();
+    TESTING_SERVER = new SimpleServer(8080, "0.0.0.0", new TestingRouter());
+    TESTING_SERVER.start();
   }
 
   @Test
@@ -29,7 +31,7 @@ class GetRequestTest {
     String payload = "";
 
     try {
-      payload = asyncGetRequest.to(FAKE_SERVER.url() + "/fake/get", "key=popokis").get().body();
+      payload = asyncGetRequest.to(TESTING_SERVER.url() + "/fake/get", "key=popokis").get().body();
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
@@ -40,13 +42,13 @@ class GetRequestTest {
   @Test
   void syncGetRequestTest() {
     MakeRequest<String> syncPostRequest = new GetRequest<>(SimpleClient.getInstance());
-    String payload = syncPostRequest.to(FAKE_SERVER.url() + "/fake/get", "key=popokis");
+    String payload = syncPostRequest.to(TESTING_SERVER.url() + "/fake/get", "key=popokis");
 
     assertTrue(payload.contains("popokis"));
   }
 
   @AfterAll
   static void tearDownAll() {
-    FAKE_SERVER.stop();
+    TESTING_SERVER.stop();
   }
 }

@@ -6,18 +6,18 @@ import io.undertow.util.HttpString;
 
 public final class Route {
 
-  private final HttpString verb;
+  private final HttpString method;
   private final String endpoint;
   private final HttpHandler handler;
 
-  private Route(HttpString verb, String endpoint, HttpHandler handler) {
-    this.verb = verb;
+  private Route(HttpString method, String endpoint, HttpHandler handler) {
+    this.method = method;
     this.endpoint = endpoint;
     this.handler = new BlockingHandler(handler);
   }
 
-  public HttpString verb() {
-    return verb;
+  public HttpString method() {
+    return method;
   }
 
   public String endpoint() {
@@ -28,7 +28,7 @@ public final class Route {
     return handler;
   }
 
-  public static Route of(HttpString verb, String endpoint, HttpHandler handler) {
-    return new Route(verb, endpoint, handler);
+  public static Route of(HttpString method, String endpoint, HttpHandler handler) {
+    return new Route(method, endpoint, handler);
   }
 }

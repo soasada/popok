@@ -1,6 +1,7 @@
 package com.popokis.popok.http.client;
 
-import com.popokis.popok.util.http.FakeServer;
+import com.popokis.popok.http.server.SimpleServer;
+import com.popokis.popok.util.http.TestingRouter;
 import jdk.incubator.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,17 +15,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AsyncSimpleClientTest {
 
   private static Client<CompletableFuture<HttpResponse<String>>> ASYNC_CLIENT;
-  private static FakeServer FAKE_SERVER;
+  private static SimpleServer TESTING_SERVER;
 
   @BeforeAll
   static void initAll() {
     ASYNC_CLIENT = SimpleAsyncClient.getInstance();
-    FAKE_SERVER = new FakeServer();
+    TESTING_SERVER = new SimpleServer(8080, "0.0.0.0", new TestingRouter());
+    TESTING_SERVER.start();
   }
 
   @Test
   void asyncGetTest() {
-    CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.get(FAKE_SERVER.url() + "/fake/get?key=popokis");
+    CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.get(TESTING_SERVER.url() + "/fake/get?key=popokis");
 
     String payload = "";
 
@@ -39,7 +41,7 @@ class AsyncSimpleClientTest {
 
   @Test
   void asyncPostTest() {
-    CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.post(FAKE_SERVER.url() + "/fake/post", "popokis");
+    CompletableFuture<HttpResponse<String>> response = ASYNC_CLIENT.post(TESTING_SERVER.url() + "/fake/post", "popokis");
     String payload = "";
 
     try {
@@ -54,6 +56,6 @@ class AsyncSimpleClientTest {
   @AfterAll
   static void tearDownAll() {
     ASYNC_CLIENT = null;
-    FAKE_SERVER.stop();
+    TESTING_SERVER.stop();
   }
 }

@@ -3,12 +3,12 @@ package com.popokis.popok.util.http;
 import com.popokis.popok.http.extractor.GetExtractor;
 import com.popokis.popok.http.extractor.PostExtractor;
 import com.popokis.popok.http.router.Route;
-import com.popokis.popok.http.server.SimpleServer;
+import com.popokis.popok.http.router.Router;
 import io.undertow.util.Methods;
 
 import java.util.List;
 
-public final class FakeServer {
+public final class TestingRouter implements Router {
 
   private static final String API_VERSION = "/api/v1";
 
@@ -23,10 +23,9 @@ public final class FakeServer {
   private static final String DELETE = "/delete";
   private static final String ALL = "/all";
 
-  private final SimpleServer server;
-
-  public FakeServer() {
-    List<Route> routes = List.of(
+  @Override
+  public List<Route> routes() {
+    return List.of(
         Route.of(Methods.GET, FAKE_GET, new FakeTextHandler(new GetExtractor())),
         Route.of(Methods.POST, FAKE_POST, new FakeTextHandler(new PostExtractor())),
 
@@ -42,15 +41,10 @@ public final class FakeServer {
         Route.of(Methods.GET, EMPLOYEE + "/{id}", CompanyHandlerFactory.crudEmployee().search()),
         Route.of(Methods.GET, EMPLOYEE + ALL, CompanyHandlerFactory.crudEmployee().all())
     );
-
-    server = new SimpleServer(8080, "0.0.0.0", routes);
   }
 
-  public void stop() {
-    server.stop();
-  }
-
-  public String url() {
-    return server.url() + API_VERSION;
+  @Override
+  public String version() {
+    return API_VERSION;
   }
 }
