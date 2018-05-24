@@ -129,8 +129,8 @@ public final class LoggerContext {
   }
 
   /**
-   * Add key -> values pairs to MDC
-   * @param args list of key -> value to be added
+   * Add key values pairs to MDC
+   * @param args list of key value to be added
    */
   public static void addToContextMap(String... args) {
     if (args == null || args.length % 2 != 0)
