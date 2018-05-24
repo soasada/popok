@@ -14,12 +14,19 @@ final class HikariConnectionPool implements ConnectionPool<HikariDataSource> {
 
   private HikariConnectionPool() {
     Config config = ConfigFactory.defaultApplication().resolve();
-    HikariConfig hikariConfig;
+    HikariConfig hikariConfig = null;
 
-    if (config.getString("appEnv").equals("test")) {
-      hikariConfig = getConfig(config.getConfig("test"));
-    } else {
-      hikariConfig = getConfig(config.getConfig("prod"));
+    // by default test (if present)
+    switch (config.getString("appEnv")) {
+      case "test":
+        hikariConfig = getConfig(config.getConfig("test"));
+        break;
+      case "prod":
+        hikariConfig = getConfig(config.getConfig("prod"));
+        break;
+      case "debug":
+        hikariConfig = getConfig(config.getConfig("debug"));
+        break;
     }
 
     dataSource = new HikariDataSource(hikariConfig);
