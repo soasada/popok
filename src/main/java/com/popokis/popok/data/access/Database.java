@@ -1,4 +1,4 @@
-package com.popokis.popok.data;
+package com.popokis.popok.data.access;
 
 import com.popokis.popok.data.query.Query;
 import com.zaxxer.hikari.HikariDataSource;
@@ -21,16 +21,8 @@ public final class Database {
 
   private final ConnectionPool<HikariDataSource> connectionPool;
 
-  private Database() {
-    connectionPool = HikariConnectionPool.getInstance();
-  }
-
-  private static class Holder {
-    private static final Database INSTANCE = new Database();
-  }
-
-  public static Database getInstance() {
-    return Holder.INSTANCE;
+  public Database(ConnectionPool<HikariDataSource> connectionPool) {
+    this.connectionPool = connectionPool;
   }
 
   public long executeInsert(Query query) {

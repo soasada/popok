@@ -1,10 +1,13 @@
 package com.popokis.popok.data;
 
+import com.popokis.popok.data.access.Database;
+import com.popokis.popok.data.access.FixedCachedRowSet;
+import com.popokis.popok.data.access.HikariConnectionPool;
+import com.popokis.popok.data.mapper.ListMapper;
+import com.popokis.popok.data.mapper.Mapper;
 import com.popokis.popok.data.query.BasicRepository;
-import com.popokis.popok.serialization.Deserializator;
-import com.popokis.popok.serialization.db.ListDeserializator;
 import com.popokis.popok.util.data.DatabaseUtil;
-import com.popokis.popok.util.data.deserializator.TestModelDeserializator;
+import com.popokis.popok.util.data.mapper.TestModelMapper;
 import com.popokis.popok.util.data.model.TestModel;
 import com.popokis.popok.util.query.TestRepository;
 import org.junit.jupiter.api.AfterAll;
@@ -20,17 +23,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DatabaseTest {
 
   private static BasicRepository<TestModel> testRepository;
+  private static Database db;
 
   @BeforeAll
   static void initAll() {
     testRepository = new TestRepository();
-    DatabaseUtil.createTestSchema();
+    db = new Database(HikariConnectionPool.getInstance());
+    DatabaseUtil.createTestSchema(db);
   }
 
   @Test
   void insertAndSelectTest() {
     long id = insert();
-    FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
+    FixedCachedRowSet fixedCachedRowSet = db.executeQuery(testRepository.findQuery().find(id));
     fixedCachedRowSet.next();
     String name = fixedCachedRowSet.getString("name");
 
@@ -41,7 +46,7 @@ class DatabaseTest {
   @Test
   void insertAndDeleteTest() {
     long id = insert();
-    int affectedRow = Database.getInstance().executeDML(testRepository.remove(id));
+    int affectedRow = db.executeDML(testRepository.removeQuery().delete(id));
 
     assertEquals(1, affectedRow);
   }
@@ -51,8 +56,8 @@ class DatabaseTest {
     String expectedName = "test2";
 
     long id = insert();
-    int affectedRow = Database.getInstance().executeDML(testRepository.modify(TestModel.create(id, expectedName)));
-    FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.find(id));
+    int affectedRow = db.executeDML(testRepository.modifyQuery().update(TestModel.create(id, expectedName)));
+    FixedCachedRowSet fixedCachedRowSet = db.executeQuery(testRepository.findQuery().find(id));
     fixedCachedRowSet.next();
 
     assertEquals(1, affectedRow);
@@ -62,9 +67,9 @@ class DatabaseTest {
   @Test
   void insertAndGetAllTest() {
     insert();
-    FixedCachedRowSet fixedCachedRowSet = Database.getInstance().executeQuery(testRepository.all());
-    Deserializator<List<TestModel>, FixedCachedRowSet> deserializator = new ListDeserializator<>(new TestModelDeserializator());
-    List<TestModel> testModels = deserializator.deserialize(fixedCachedRowSet);
+    FixedCachedRowSet fixedCachedRowSet = db.executeQuery(testRepository.allQuery().all());
+    Mapper<List<TestModel>> mapper = new ListMapper<>(new TestModelMapper());
+    List<TestModel> testModels = mapper.map(fixedCachedRowSet);
 
     assertFalse(testModels.isEmpty());
   }
@@ -72,10 +77,11 @@ class DatabaseTest {
   @AfterAll
   static void tearDownAll() {
     testRepository = null;
-    DatabaseUtil.dropTestSchema();
+    DatabaseUtil.dropTestSchema(db);
+    db = null;
   }
 
   private long insert() {
-    return Database.getInstance().executeInsert(testRepository.save(TestModel.create(null, "test")));
+    return db.executeInsert(testRepository.saveQuery().insert(TestModel.create(null, "test")));
   }
 }

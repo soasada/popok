@@ -1,4 +1,4 @@
-package com.popokis.popok.data;
+package com.popokis.popok.data.access;
 
 import javax.sql.rowset.CachedRowSet;
 import java.math.BigDecimal;

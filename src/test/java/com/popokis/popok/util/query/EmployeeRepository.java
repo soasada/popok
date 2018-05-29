@@ -1,11 +1,16 @@
 package com.popokis.popok.util.query;
 
+import com.popokis.popok.data.query.AllQueryFactory;
 import com.popokis.popok.data.query.BasicRepository;
-import com.popokis.popok.data.query.DefaultAllQuery;
-import com.popokis.popok.data.query.DefaultDeleteQuery;
-import com.popokis.popok.data.query.DefaultFindQuery;
+import com.popokis.popok.data.query.DefaultAllQueryFactory;
+import com.popokis.popok.data.query.DefaultDeleteQueryFactory;
+import com.popokis.popok.data.query.DefaultFindQueryFactory;
+import com.popokis.popok.data.query.DeleteQueryFactory;
+import com.popokis.popok.data.query.FindQueryFactory;
+import com.popokis.popok.data.query.InsertQueryFactory;
 import com.popokis.popok.data.query.Query;
 import com.popokis.popok.data.query.QueryGenerator;
+import com.popokis.popok.data.query.UpdateQueryFactory;
 import com.popokis.popok.util.data.model.Employee;
 
 import java.sql.PreparedStatement;
@@ -22,8 +27,8 @@ public final class EmployeeRepository implements BasicRepository<Employee> {
   }
 
   @Override
-  public Query save(Employee employee) {
-    return new Query() {
+  public InsertQueryFactory<Employee> saveQuery() {
+    return employee -> new Query() {
       @Override
       public String query() {
         return "INSERT INTO " + tableName + " (" + queryGenerator.putPrefix("name", "company_id") + ") VALUES(?, ?)";
@@ -42,8 +47,8 @@ public final class EmployeeRepository implements BasicRepository<Employee> {
   }
 
   @Override
-  public Query modify(Employee employee) {
-    return new Query() {
+  public UpdateQueryFactory<Employee> modifyQuery() {
+    return employee -> new Query() {
       @Override
       public String query() {
         return "UPDATE " + tableName + " SET " + queryGenerator.putQuestionMark("name", "company_id") + " WHERE " +
@@ -64,17 +69,17 @@ public final class EmployeeRepository implements BasicRepository<Employee> {
   }
 
   @Override
-  public Query find(long id) {
-    return new DefaultFindQuery(id, tableName, queryGenerator);
+  public FindQueryFactory findQuery() {
+    return new DefaultFindQueryFactory(tableName, queryGenerator);
   }
 
   @Override
-  public Query remove(long id) {
-    return new DefaultDeleteQuery(id, tableName, queryGenerator);
+  public DeleteQueryFactory removeQuery() {
+    return new DefaultDeleteQueryFactory(tableName, queryGenerator);
   }
 
   @Override
-  public Query all() {
-    return new DefaultAllQuery(tableName);
+  public AllQueryFactory allQuery() {
+    return new DefaultAllQueryFactory(tableName);
   }
 }

@@ -1,10 +1,13 @@
 package com.popokis.popok.util.http;
 
+import com.popokis.popok.data.access.Database;
+import com.popokis.popok.data.access.HikariConnectionPool;
 import com.popokis.popok.http.extractor.IdExtractor;
 import com.popokis.popok.http.handler.BasicHandlerFactory;
 import com.popokis.popok.http.handler.SyncHandler;
-import com.popokis.popok.util.data.deserializator.CompanyDeserializator;
-import com.popokis.popok.util.data.deserializator.EmployeeDeserializator;
+import com.popokis.popok.http.manipulator.BasicManipulator;
+import com.popokis.popok.util.data.mapper.CompanyMapper;
+import com.popokis.popok.util.data.mapper.EmployeeMapper;
 import com.popokis.popok.util.data.model.Company;
 import com.popokis.popok.util.data.model.Employee;
 import com.popokis.popok.util.query.CompanyRepository;
@@ -25,7 +28,8 @@ public final class CompanyHandlerFactory {
         "company",
         Company.class,
         new CompanyRepository(),
-        new CompanyDeserializator());
+        new CompanyMapper(),
+        new Database(HikariConnectionPool.getInstance()));
   }
 
   public static BasicHandlerFactory<Employee> crudEmployee() {
@@ -35,14 +39,20 @@ public final class CompanyHandlerFactory {
         "company",
         Employee.class,
         new EmployeeRepository(),
-        new EmployeeDeserializator());
+        new EmployeeMapper(),
+        new Database(HikariConnectionPool.getInstance()));
   }
 
   public static HttpHandler companyEmployee() {
-    return new SyncHandler.Builder<>("company", new CompanyEmployeeService())
-        .extractor(new IdExtractor())
-        .requestDeserializator(Long::parseLong)
-        .requestValidator(new IdValidator(new BasicValidator<>()))
-        .build();
+    return new SyncHandler<>(
+        new IdExtractor(),
+        "company",
+        Long::parseLong,
+        new IdValidator(new BasicValidator<>()),
+        new BasicManipulator<>(),
+        new CompanyEmployeeService(),
+        object -> "",
+        new BasicManipulator<>()
+    );
   }
 }

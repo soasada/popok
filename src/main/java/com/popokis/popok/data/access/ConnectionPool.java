@@ -1,4 +1,4 @@
-package com.popokis.popok.data;
+package com.popokis.popok.data.access;
 
 import java.sql.Connection;
 

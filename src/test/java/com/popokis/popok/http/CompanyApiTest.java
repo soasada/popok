@@ -1,5 +1,7 @@
 package com.popokis.popok.http;
 
+import com.popokis.popok.data.access.Database;
+import com.popokis.popok.data.access.HikariConnectionPool;
 import com.popokis.popok.http.client.Client;
 import com.popokis.popok.http.client.SimpleClient;
 import com.popokis.popok.http.response.RestResponse;
@@ -18,12 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CompanyApiTest {
 
+  private static Database db;
   private static Client<String> CLIENT;
   private static SimpleServer TESTING_SERVER;
 
   @BeforeAll
   static void initAll() {
-    DatabaseUtil.createTestSchema();
+    db = new Database(HikariConnectionPool.getInstance());
+    DatabaseUtil.createTestSchema(db);
     CLIENT = SimpleClient.getInstance();
     TESTING_SERVER = new SimpleServer(8080, "0.0.0.0", new TestingRouter());
     TESTING_SERVER.start();
@@ -42,8 +46,9 @@ class CompanyApiTest {
 
   @AfterAll
   static void tearDownAll() {
-    DatabaseUtil.dropTestSchema();
+    DatabaseUtil.dropTestSchema(db);
     CLIENT = null;
     TESTING_SERVER.stop();
+    db = null;
   }
 }

@@ -1,6 +1,6 @@
 package com.popokis.popok.util.data;
 
-import com.popokis.popok.data.Database;
+import com.popokis.popok.data.access.Database;
 import com.popokis.popok.data.query.BasicRepository;
 import com.popokis.popok.util.data.model.Company;
 import com.popokis.popok.util.data.model.Employee;
@@ -20,26 +20,26 @@ public final class DatabaseUtil {
 
   private DatabaseUtil() {}
 
-  public static void createTestSchema() {
-    Database.getInstance().executeDML(new CreateTestTableQuery());
-    Database.getInstance().executeDML(new CreateCompanyTableQuery());
-    Database.getInstance().executeDML(new CreateEmployeeTableQuery());
-    loadTestData();
+  public static void createTestSchema(Database db) {
+    db.executeDML(new CreateTestTableQuery());
+    db.executeDML(new CreateCompanyTableQuery());
+    db.executeDML(new CreateEmployeeTableQuery());
+    loadTestData(db);
   }
 
-  public static void dropTestSchema() {
-    Database.getInstance().executeDML(new DropTestTableQuery());
-    Database.getInstance().executeDML(new DropEmployeeTableQuery());
-    Database.getInstance().executeDML(new DropCompanyTableQuery());
+  public static void dropTestSchema(Database db) {
+    db.executeDML(new DropTestTableQuery());
+    db.executeDML(new DropEmployeeTableQuery());
+    db.executeDML(new DropCompanyTableQuery());
   }
 
-  private static void loadTestData() {
+  private static void loadTestData(Database db) {
     BasicRepository<Company> companyRepository = new CompanyRepository();
     BasicRepository<Employee> employeeRepository = new EmployeeRepository();
 
-    COMPANY_ID = Database.getInstance().executeInsert(companyRepository.save(Company.create(null, "testCompany")));
-    EMPLOYEE_ID = Database.getInstance().executeInsert(employeeRepository.save(Employee.create(null, "testEmployee1", COMPANY_ID)));
-    Database.getInstance().executeInsert(employeeRepository.save(Employee.create(null, "testEmployee2", COMPANY_ID)));
-    Database.getInstance().executeInsert(employeeRepository.save(Employee.create(null, "testEmployee3", COMPANY_ID)));
+    COMPANY_ID = db.executeInsert(companyRepository.saveQuery().insert(Company.create(null, "testCompany")));
+    EMPLOYEE_ID = db.executeInsert(employeeRepository.saveQuery().insert(Employee.create(null, "testEmployee1", COMPANY_ID)));
+    db.executeInsert(employeeRepository.saveQuery().insert(Employee.create(null, "testEmployee2", COMPANY_ID)));
+    db.executeInsert(employeeRepository.saveQuery().insert(Employee.create(null, "testEmployee3", COMPANY_ID)));
   }
 }

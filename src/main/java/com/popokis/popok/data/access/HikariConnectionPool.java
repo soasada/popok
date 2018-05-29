@@ -1,4 +1,4 @@
-package com.popokis.popok.data;
+package com.popokis.popok.data.access;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -8,7 +8,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-final class HikariConnectionPool implements ConnectionPool<HikariDataSource> {
+public final class HikariConnectionPool implements ConnectionPool<HikariDataSource> {
 
   private final HikariDataSource dataSource;
 
@@ -36,7 +36,7 @@ final class HikariConnectionPool implements ConnectionPool<HikariDataSource> {
     private static final ConnectionPool<HikariDataSource> INSTANCE = new HikariConnectionPool();
   }
 
-  static ConnectionPool<HikariDataSource> getInstance() {
+  public static ConnectionPool<HikariDataSource> getInstance() {
     return Holder.INSTANCE;
   }
 

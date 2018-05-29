@@ -1,10 +1,13 @@
 package com.popokis.popok.data;
 
-import com.popokis.popok.serialization.Deserializator;
+import com.popokis.popok.data.access.Database;
+import com.popokis.popok.data.access.FixedCachedRowSet;
+import com.popokis.popok.data.access.HikariConnectionPool;
+import com.popokis.popok.data.mapper.Mapper;
 import com.popokis.popok.util.data.DatabaseUtil;
-import com.popokis.popok.util.data.deserializator.CompanyResponseDeserializator;
-import com.popokis.popok.util.data.deserializator.CompanyResponseDeserializator2;
-import com.popokis.popok.util.data.deserializator.EmployeeResponseDeserializator;
+import com.popokis.popok.util.data.mapper.CompanyResponseMapper;
+import com.popokis.popok.util.data.mapper.CompanyResponseMapper2;
+import com.popokis.popok.util.data.mapper.EmployeeResponseMapper;
 import com.popokis.popok.util.http.CompanyResponse;
 import com.popokis.popok.util.http.EmployeeResponse;
 import com.popokis.popok.util.query.CompanyEmployeesAliasQuery;
@@ -18,49 +21,53 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JoinTest {
 
+  private static Database db;
+
   @BeforeAll
   static void initAll() {
-    DatabaseUtil.createTestSchema();
+    db = new Database(HikariConnectionPool.getInstance());
+    DatabaseUtil.createTestSchema(db);
   }
 
   @Test
   void getAllEmployeesForCompanyTest() {
-    FixedCachedRowSet rowSet = Database.getInstance().executeQuery(new CompanyEmployeesQuery(DatabaseUtil.COMPANY_ID));
+    FixedCachedRowSet rowSet = db.executeQuery(new CompanyEmployeesQuery(DatabaseUtil.COMPANY_ID));
     rowSet.next();
 
-    Deserializator<CompanyResponse, FixedCachedRowSet> deserializator = new CompanyResponseDeserializator();
+    Mapper<CompanyResponse> deserializator = new CompanyResponseMapper();
 
-    CompanyResponse companyResponse = deserializator.deserialize(rowSet);
+    CompanyResponse companyResponse = deserializator.map(rowSet);
 
     assertEquals(3, companyResponse.employees().size());
   }
 
   @Test
   void getEmployeeWithCompanyTest() {
-    FixedCachedRowSet rowSet = Database.getInstance().executeQuery(new EmployeeCompanyQuery(DatabaseUtil.EMPLOYEE_ID));
+    FixedCachedRowSet rowSet = db.executeQuery(new EmployeeCompanyQuery(DatabaseUtil.EMPLOYEE_ID));
     rowSet.next();
 
-    Deserializator<EmployeeResponse, FixedCachedRowSet> deserializator = new EmployeeResponseDeserializator();
+    Mapper<EmployeeResponse> deserializator = new EmployeeResponseMapper();
 
-    EmployeeResponse employeeResponse = deserializator.deserialize(rowSet);
+    EmployeeResponse employeeResponse = deserializator.map(rowSet);
 
     assertEquals("testCompany", employeeResponse.company().name());
   }
 
   @Test
   void getAllEmployeesForCompanyWithAliasesTest() {
-    FixedCachedRowSet rowSet = Database.getInstance().executeQuery(new CompanyEmployeesAliasQuery(DatabaseUtil.COMPANY_ID));
+    FixedCachedRowSet rowSet = db.executeQuery(new CompanyEmployeesAliasQuery(DatabaseUtil.COMPANY_ID));
     rowSet.next();
 
-    Deserializator<CompanyResponse, FixedCachedRowSet> deserializator = new CompanyResponseDeserializator2();
+    Mapper<CompanyResponse> deserializator = new CompanyResponseMapper2();
 
-    CompanyResponse companyResponse = deserializator.deserialize(rowSet);
+    CompanyResponse companyResponse = deserializator.map(rowSet);
 
     assertEquals(3, companyResponse.employees().size());
   }
 
   @AfterAll
   static void tearDownAll() {
-    DatabaseUtil.dropTestSchema();
+    DatabaseUtil.dropTestSchema(db);
+    db = null;
   }
 }

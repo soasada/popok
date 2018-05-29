@@ -1,7 +1,7 @@
-package com.popokis.popok.util.data.deserializator;
+package com.popokis.popok.util.data.mapper;
 
-import com.popokis.popok.data.FixedCachedRowSet;
-import com.popokis.popok.serialization.Deserializator;
+import com.popokis.popok.data.access.FixedCachedRowSet;
+import com.popokis.popok.data.mapper.Mapper;
 import com.popokis.popok.util.data.model.Company;
 import com.popokis.popok.util.data.model.Employee;
 import com.popokis.popok.util.http.CompanyResponse;
@@ -9,10 +9,10 @@ import com.popokis.popok.util.http.CompanyResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class CompanyResponseDeserializator2 implements Deserializator<CompanyResponse, FixedCachedRowSet> {
+public final class CompanyResponseMapper2 implements Mapper<CompanyResponse> {
 
   @Override
-  public CompanyResponse deserialize(FixedCachedRowSet source) {
+  public CompanyResponse map(FixedCachedRowSet source) {
     Company company = Company.create(source.getLong("company_id"), source.getString("company_name"));
     Employee firstEmployee = Employee.create(
         source.getLong("employee_id"),

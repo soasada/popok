@@ -1,8 +1,7 @@
 package com.popokis.popok.serialization;
 
 /**
- * Serialize a java object to his "message/source" format representation (normally JSON, QueryString or
- * FixedCachedRowSet).
+ * Serialize a java object to his "message/source" format representation (normally JSON or QueryString).
  *
  * @param <S> Format object representation.
  * @param <T> Java object to serialize.
