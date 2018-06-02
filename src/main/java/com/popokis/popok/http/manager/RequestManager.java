@@ -7,7 +7,7 @@ import com.popokis.popok.log.PopokLogger;
 import com.popokis.popok.log.context.LoggerContext;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.service.Service;
-import com.popokis.popok.util.Identificable;
+import com.popokis.popok.util.Identifiable;
 import com.popokis.popok.util.validator.Validator;
 import io.undertow.server.HttpServerExchange;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public final class RequestManager<R, S> implements Manager<HttpServerExchange, P
   private final Validator<R> requestValidator;
   private final Manipulator<R> requestManipulator;
   private final Service<R, S> service;
-  private final Identificable<R> requestIdentificable;
+  private final Identifiable<R> requestIdentifiable;
 
   public RequestManager(Extractor extractor,
                         String loggerName,
@@ -28,14 +28,14 @@ public final class RequestManager<R, S> implements Manager<HttpServerExchange, P
                         Validator<R> requestValidator,
                         Manipulator<R> requestManipulator,
                         Service<R, S> service,
-                        Identificable<R> requestIdentificable) {
+                        Identifiable<R> requestIdentifiable) {
     this.extractor = extractor;
     this.logger = PopokLogger.getLogger(loggerName);
     this.requestDeserializator = requestDeserializator;
     this.requestValidator = requestValidator;
     this.requestManipulator = requestManipulator;
     this.service = service;
-    this.requestIdentificable = requestIdentificable;
+    this.requestIdentifiable = requestIdentifiable;
   }
 
   @Override
@@ -46,7 +46,7 @@ public final class RequestManager<R, S> implements Manager<HttpServerExchange, P
 
     try {
       R deserializedRequest = requestDeserializator.deserialize(requestPayload);
-      requestId = requestIdentificable.from(deserializedRequest);
+      requestId = requestIdentifiable.from(deserializedRequest);
       requestValidator.validate(deserializedRequest);
       R manipulatedRequest = requestManipulator.manipulate(deserializedRequest);
       S response = service.call(manipulatedRequest);

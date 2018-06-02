@@ -4,7 +4,6 @@ import com.popokis.popok.data.access.Database;
 import com.popokis.popok.data.access.HikariConnectionPool;
 import com.popokis.popok.http.extractor.IdExtractor;
 import com.popokis.popok.http.handler.BasicHandlerFactory;
-import com.popokis.popok.http.handler.SyncHandler;
 import com.popokis.popok.http.manipulator.BasicManipulator;
 import com.popokis.popok.util.data.mapper.CompanyMapper;
 import com.popokis.popok.util.data.mapper.EmployeeMapper;
