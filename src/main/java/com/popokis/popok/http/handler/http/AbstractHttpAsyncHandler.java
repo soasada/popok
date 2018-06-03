@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractHttpAsyncHandler<Req extends Identifiable, Res>
-    extends AbstractServiceHandler<Req, CompletableFuture<HttpResponse<String>>> {
+    extends AbstractServiceHandler<Req, CompletableFuture<HttpResponse<String>>, Res> {
 
   public AbstractHttpAsyncHandler(Extractor extractor,
                                   Logger logger,
@@ -28,7 +28,7 @@ public abstract class AbstractHttpAsyncHandler<Req extends Identifiable, Res>
   protected final void finalizeResponse(CompletableFuture<HttpResponse<String>> response, HttpServerExchange exchange) {
     response
         .thenApply(HttpResponse::body)
-        .thenApply(rawResponse -> manageResponse(unwrapResponse(rawResponse), exchange))
+        .thenApply(rawResponse -> manageResponse(unwrapResponse(rawResponse, exchange), exchange))
         .whenComplete((stringResponse, exception) -> {
           if (Objects.nonNull(stringResponse)) {
             ResponseSender.asJson(exchange, stringResponse);
@@ -36,6 +36,16 @@ public abstract class AbstractHttpAsyncHandler<Req extends Identifiable, Res>
             ResponseSender.asJson(exchange, request().id(), exception, logger);
           }
         });
+  }
+
+  private Res unwrapResponse(String rawResponse, HttpServerExchange exchange) {
+    RestResponse<Res> restResponse = deserializeResponse(rawResponse);
+
+    if (!restResponse.response().code().equals(OK_CODE)) {
+      ResponseSender.asJson(exchange, request().id(), restResponse);
+    }
+
+    return restResponse.payload();
   }
 
   @Override
@@ -50,15 +60,5 @@ public abstract class AbstractHttpAsyncHandler<Req extends Identifiable, Res>
     // that there is no possibility of a race. Because the exchange is not thread safe this approach makes sure only one
     // thread can run at a time.
     exchange.dispatch(SameThreadExecutor.INSTANCE, () -> finalizeResponse(future, exchange));
-  }
-
-  private RestResponse<Res> unwrapResponse(String rawResponse, HttpServerExchange exchange) {
-    RestResponse<Res> restResponse = deserializeResponse(rawResponse);
-
-    if (!restResponse.response().code().equals(OK_CODE)) {
-      ResponseSender.asJson(exchange, request().id(), restResponse);
-    }
-
-    return restResponse;
   }
 }

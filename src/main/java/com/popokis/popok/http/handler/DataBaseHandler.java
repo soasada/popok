@@ -1,17 +1,18 @@
 package com.popokis.popok.http.handler;
 
-import com.clickferry.oceanus_lib.exception.OceanusRuntimeException;
-import com.clickferry.oceanus_lib.http.ServeResponse;
-import com.clickferry.oceanus_lib.http.extractor.Extractor;
-import com.clickferry.oceanus_lib.service.Service;
-import com.clickferry.oceanus_lib.souk.common.Deserializator;
-import com.clickferry.oceanus_lib.souk.common.JacksonSerializator;
-import com.clickferry.oceanus_lib.validate.Validator;
-import com.clickferry.oceanus_lib.value_boat.OceanusResponse;
-import com.clickferry.oceanus_lib.value_boat.entities.Response;
-import com.clickferry.oceanus_lib.value_boat.exception.ErrorCode;
-import com.clickferry.yarr.logger.YarrLogger;
+import com.popokis.popok.http.ResponseSender;
+import com.popokis.popok.http.extractor.Extractor;
+import com.popokis.popok.http.response.Response;
+import com.popokis.popok.http.response.RestResponse;
+import com.popokis.popok.log.PopokLogger;
+import com.popokis.popok.serialization.Deserializator;
+import com.popokis.popok.serialization.json.JacksonSerializator;
+import com.popokis.popok.service.Service;
+import com.popokis.popok.util.validator.Validator;
 import io.undertow.server.HttpServerExchange;
+
+import static com.popokis.popok.http.handler.http.AbstractServiceHandler.OK_CODE;
+import static com.popokis.popok.http.handler.http.AbstractServiceHandler.OK_MESSAGE;
 
 public final class DataBaseHandler<Req, Res> extends AbstractHandler<Req, Res> {
 
@@ -23,7 +24,7 @@ public final class DataBaseHandler<Req, Res> extends AbstractHandler<Req, Res> {
                          Deserializator<Req, String> requestDeserializator,
                          Validator<Req> requestValidator,
                          Service<Req, Res> service) {
-    super(extractor, YarrLogger.getLogger(loggerName), service);
+    super(extractor, PopokLogger.getLogger(loggerName), service);
     this.requestDeserializator = requestDeserializator;
     this.requestValidator = requestValidator;
   }
@@ -45,21 +46,18 @@ public final class DataBaseHandler<Req, Res> extends AbstractHandler<Req, Res> {
 
   @Override
   public final void handleRequest(HttpServerExchange exchange) {
-    String requestPayload = extractor.payloadFrom(exchange);
+    String requestPayload = extractor.from(exchange);
     String requestId = "DB";
 
     try {
       Req deserializedRequest = deserializeRequest(requestPayload);
       validate(deserializedRequest);
       Res response = service.call(deserializedRequest);
-      OceanusResponse<Res> oceanusResponse =
-          OceanusResponse.create(Response.create(requestId, ErrorCode.A0, ErrorCode.A0.message()), response);
+      RestResponse<Res> oceanusResponse = RestResponse.create(Response.create(requestId, OK_CODE, OK_MESSAGE), response);
       String serializedResponse = new JacksonSerializator<>().serialize(oceanusResponse);
-      ServeResponse.asJson(exchange, serializedResponse);
-    } catch (OceanusRuntimeException e) {
-      ServeResponse.asJson(exchange, requestId, e, logger);
+      ResponseSender.asJson(exchange, serializedResponse);
     } catch (Exception e) {
-      ServeResponse.asJson(exchange, requestId, e, logger);
+      ResponseSender.asJson(exchange, requestId, e, logger);
     }
   }
 }

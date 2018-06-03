@@ -10,7 +10,7 @@ import com.popokis.popok.util.Identifiable;
 import io.undertow.server.HttpServerExchange;
 import org.slf4j.Logger;
 
-public abstract class AbstractServiceHandler<Req extends Identifiable, Res> extends AbstractHandler<Req, Res> {
+public abstract class AbstractServiceHandler<Req extends Identifiable, Res, MidRes> extends AbstractHandler<Req, Res> {
 
   public static final String OK_CODE = "0";
   public static final String OK_MESSAGE = "OK";
@@ -21,9 +21,9 @@ public abstract class AbstractServiceHandler<Req extends Identifiable, Res> exte
     super(extractor, logger, service);
   }
 
-  protected abstract Res manipulateResponse(Res response);
+  protected abstract MidRes manipulateResponse(MidRes response);
 
-  protected abstract String serialize(RestResponse<Res> oceanusResponse);
+  protected abstract String serialize(RestResponse<MidRes> oceanusResponse);
 
   protected abstract void finalizeResponse(Res response, HttpServerExchange exchange);
 
@@ -44,11 +44,11 @@ public abstract class AbstractServiceHandler<Req extends Identifiable, Res> exte
     }
   }
 
-  protected final String manageResponse(Res response, HttpServerExchange exchange) {
+  protected final String manageResponse(MidRes response, HttpServerExchange exchange) {
     try {
-      Res manipulatedResponse = manipulateResponse(response);
+      MidRes manipulatedResponse = manipulateResponse(response);
       Response responseWithCode = Response.create(request().id(), OK_CODE, OK_MESSAGE);
-      RestResponse<Res> restResponse = RestResponse.create(responseWithCode, manipulatedResponse);
+      RestResponse<MidRes> restResponse = RestResponse.create(responseWithCode, manipulatedResponse);
       String stringResponse = serialize(restResponse);
       logResponse(stringResponse);
       return stringResponse;

@@ -5,7 +5,6 @@ import com.popokis.popok.data.mapper.Mapper;
 import com.popokis.popok.data.query.BasicRepository;
 import com.popokis.popok.http.extractor.IdExtractor;
 import com.popokis.popok.http.extractor.PostExtractor;
-import com.popokis.popok.http.manipulator.BasicManipulator;
 import com.popokis.popok.serialization.json.JacksonDeserializator;
 import com.popokis.popok.service.db.DefaultAllService;
 import com.popokis.popok.service.db.InsertDBService;
@@ -44,62 +43,47 @@ public final class BasicHandlerFactory<T> {
   }
 
   public HttpHandler create() {
-    return new SyncHandler<>(
+    return new DataBaseHandler<>(
         new PostExtractor(),
         loggerName,
         new JacksonDeserializator<>(requestType),
         createValidator,
-        new BasicManipulator<>(),
-        new InsertDBService<>(db, repository.saveQuery()),
-        object -> "",
-        new BasicManipulator<>());
+        new InsertDBService<>(db, repository.saveQuery()));
   }
 
   public HttpHandler update() {
-    return new SyncHandler<>(
+    return new DataBaseHandler<>(
         new PostExtractor(),
         loggerName,
         new JacksonDeserializator<>(requestType),
         updateValidator,
-        new BasicManipulator<>(),
-        new UpdateDBService<>(db, repository.modifyQuery()),
-        object -> "",
-        new BasicManipulator<>());
+        new UpdateDBService<>(db, repository.modifyQuery()));
   }
 
   public HttpHandler remove() {
-    return new SyncHandler<>(
+    return new DataBaseHandler<>(
         new IdExtractor(),
         loggerName,
         Long::parseLong,
         new IdValidator(new BasicValidator<>()),
-        new BasicManipulator<>(),
-        new RemoveDBService<>(db, repository.removeQuery()),
-        object -> "",
-        new BasicManipulator<>());
+        new RemoveDBService<>(db, repository.removeQuery()));
   }
 
   public HttpHandler search() {
-    return new SyncHandler<>(
+    return new DataBaseHandler<>(
         new IdExtractor(),
         loggerName,
         Long::parseLong,
         new IdValidator(new BasicValidator<>()),
-        new BasicManipulator<>(),
-        new SearchDBService<>(db, repository.findQuery(), mapper),
-        object -> "",
-        new BasicManipulator<>());
+        new SearchDBService<>(db, repository.findQuery(), mapper));
   }
 
   public HttpHandler all() {
-    return new SyncHandler<>(
+    return new DataBaseHandler<>(
         e -> "",
         loggerName,
         s -> null,
         new BasicValidator<>(),
-        new BasicManipulator<>(),
-        new DefaultAllService<>(db, repository.allQuery(), mapper),
-        object -> "",
-        new BasicManipulator<>());
+        new DefaultAllService<>(db, repository.allQuery(), mapper));
   }
 }

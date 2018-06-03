@@ -1,21 +1,25 @@
 package com.popokis.popok.http.handler.http;
 
+import com.popokis.popok.http.extractor.Extractor;
+import com.popokis.popok.http.manipulator.Manipulator;
 import com.popokis.popok.http.response.RestResponse;
 import com.popokis.popok.log.PopokLogger;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.serialization.json.JacksonSerializator;
+import com.popokis.popok.service.Service;
 import com.popokis.popok.util.Identifiable;
+import com.popokis.popok.util.validator.Validator;
 import jdk.incubator.http.HttpResponse;
 
 import java.util.concurrent.CompletableFuture;
 
-public final class DefaultHttpAsyncHandler<Req extends Identifiable<Req>, Res> extends AbstractHttpAsyncHandler<Req, Res> {
+public final class DefaultHttpAsyncHandler<Req extends Identifiable, Res> extends AbstractHttpAsyncHandler<Req, Res> {
 
   private final Deserializator<Req, String> requestDeserializator;
   private final Validator<Req> requestValidator;
   private final Manipulator<Req> requestManipulator;
   private final Manipulator<Res> responseManipulator;
-  private final Deserializator<OceanusResponse<Res>, String> responseDeserializator;
+  private final Deserializator<RestResponse<Res>, String> responseDeserializator;
 
   public DefaultHttpAsyncHandler(Extractor extractor,
                                  String loggerName,
@@ -24,7 +28,7 @@ public final class DefaultHttpAsyncHandler<Req extends Identifiable<Req>, Res> e
                                  Manipulator<Req> requestManipulator,
                                  Service<Req, CompletableFuture<HttpResponse<String>>> service,
                                  Manipulator<Res> responseManipulator,
-                                 Deserializator<OceanusResponse<Res>, String> responseDeserializator) {
+                                 Deserializator<RestResponse<Res>, String> responseDeserializator) {
     super(extractor, PopokLogger.getLogger(loggerName), service);
     this.requestDeserializator = requestDeserializator;
     this.requestValidator = requestValidator;

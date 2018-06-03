@@ -4,7 +4,7 @@ import com.popokis.popok.data.access.Database;
 import com.popokis.popok.data.access.HikariConnectionPool;
 import com.popokis.popok.http.extractor.IdExtractor;
 import com.popokis.popok.http.handler.BasicHandlerFactory;
-import com.popokis.popok.http.manipulator.BasicManipulator;
+import com.popokis.popok.http.handler.DataBaseHandler;
 import com.popokis.popok.util.data.mapper.CompanyMapper;
 import com.popokis.popok.util.data.mapper.EmployeeMapper;
 import com.popokis.popok.util.data.model.Company;
@@ -43,15 +43,11 @@ public final class CompanyHandlerFactory {
   }
 
   public static HttpHandler companyEmployee() {
-    return new SyncHandler<>(
+    return new DataBaseHandler<>(
         new IdExtractor(),
         "company",
         Long::parseLong,
         new IdValidator(new BasicValidator<>()),
-        new BasicManipulator<>(),
-        new CompanyEmployeeService(),
-        object -> "",
-        new BasicManipulator<>()
-    );
+        new CompanyEmployeeService());
   }
 }

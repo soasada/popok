@@ -7,7 +7,7 @@ import com.popokis.popok.util.Identifiable;
 import io.undertow.server.HttpServerExchange;
 import org.slf4j.Logger;
 
-public abstract class AbstractServiceSyncHandler<Req extends Identifiable, Res> extends AbstractServiceHandler<Req, Res> {
+public abstract class AbstractServiceSyncHandler<Req extends Identifiable, Res> extends AbstractServiceHandler<Req, Res, Res> {
 
   public AbstractServiceSyncHandler(Extractor extractor, Logger logger, Service<Req, Res> service) {
     super(extractor, logger, service);
