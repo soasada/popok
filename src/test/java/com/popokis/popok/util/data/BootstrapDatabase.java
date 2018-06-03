@@ -6,12 +6,7 @@ import com.popokis.popok.util.data.model.Company;
 import com.popokis.popok.util.data.model.Employee;
 import com.popokis.popok.util.query.CompanyRepository;
 import com.popokis.popok.util.query.EmployeeRepository;
-import com.popokis.popok.util.query.schema.CreateCompanyTableQuery;
-import com.popokis.popok.util.query.schema.CreateEmployeeTableQuery;
-import com.popokis.popok.util.query.schema.CreateTestTableQuery;
-import com.popokis.popok.util.query.schema.DropCompanyTableQuery;
-import com.popokis.popok.util.query.schema.DropEmployeeTableQuery;
-import com.popokis.popok.util.query.schema.DropTestTableQuery;
+import com.popokis.popok.util.query.TestingQueryFactory;
 
 public final class BootstrapDatabase {
 
@@ -21,16 +16,25 @@ public final class BootstrapDatabase {
   private BootstrapDatabase() {}
 
   public static void createTestSchema(Database db) {
-    db.executeDML(new CreateTestTableQuery());
-    db.executeDML(new CreateCompanyTableQuery());
-    db.executeDML(new CreateEmployeeTableQuery());
+    db.executeDML(TestingQueryFactory.create("CREATE TABLE IF NOT EXISTS test (id INT UNSIGNED NOT NULL AUTO_INCREMENT, name VARCHAR(255), PRIMARY KEY (id))"));
+    db.executeDML(TestingQueryFactory.create("CREATE TABLE IF NOT EXISTS company (c_id INT UNSIGNED NOT NULL AUTO_INCREMENT, " +
+        "c_name VARCHAR(255) NOT NULL, PRIMARY KEY (c_id))"));
+    db.executeDML(TestingQueryFactory.create("CREATE TABLE IF NOT EXISTS employee (e_id INT UNSIGNED NOT NULL AUTO_INCREMENT, " +
+        "e_name VARCHAR(255) NOT NULL, e_company_id INT UNSIGNED NOT NULL, PRIMARY KEY (e_id), " +
+        "INDEX fk_employee_company_idx (e_company_id ASC), " +
+        "CONSTRAINT fk_employee_company " +
+        "FOREIGN KEY (e_company_id) " +
+        "REFERENCES company (c_id) " +
+        "ON DELETE NO ACTION " +
+        "ON UPDATE NO ACTION)"));
+
     loadTestData(db);
   }
 
   public static void dropTestSchema(Database db) {
-    db.executeDML(new DropTestTableQuery());
-    db.executeDML(new DropEmployeeTableQuery());
-    db.executeDML(new DropCompanyTableQuery());
+    db.executeDML(TestingQueryFactory.create("DROP TABLE IF EXISTS test"));
+    db.executeDML(TestingQueryFactory.create("DROP TABLE IF EXISTS employee"));
+    db.executeDML(TestingQueryFactory.create("DROP TABLE IF EXISTS company"));
   }
 
   private static void loadTestData(Database db) {
