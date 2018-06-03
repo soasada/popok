@@ -1,5 +1,6 @@
 package com.popokis.popok.http.handler.http;
 
+import com.popokis.popok.http.ResponseSender;
 import com.popokis.popok.http.extractor.Extractor;
 import com.popokis.popok.http.manipulator.Manipulator;
 import com.popokis.popok.http.response.RestResponse;
@@ -9,6 +10,7 @@ import com.popokis.popok.serialization.json.JacksonSerializator;
 import com.popokis.popok.service.Service;
 import com.popokis.popok.util.Identifiable;
 import com.popokis.popok.util.validator.Validator;
+import io.undertow.server.HttpServerExchange;
 import jdk.incubator.http.HttpResponse;
 
 import java.util.concurrent.CompletableFuture;
@@ -63,7 +65,13 @@ public final class DefaultHttpAsyncHandler<Req extends Identifiable, Res> extend
   }
 
   @Override
-  protected RestResponse<Res> deserializeResponse(String rawResponse) {
-    return responseDeserializator.deserialize(rawResponse);
+  protected Res middleware(String rawResponse, HttpServerExchange exchange) {
+    RestResponse<Res> restResponse = responseDeserializator.deserialize(rawResponse);
+
+    if (!restResponse.response().code().equals(OK_CODE)) {
+      ResponseSender.asJson(exchange, request().id(), restResponse);
+    }
+
+    return restResponse.payload();
   }
 }
