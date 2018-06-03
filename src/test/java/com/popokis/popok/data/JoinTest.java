@@ -4,7 +4,7 @@ import com.popokis.popok.data.access.Database;
 import com.popokis.popok.data.access.FixedCachedRowSet;
 import com.popokis.popok.data.access.HikariConnectionPool;
 import com.popokis.popok.data.mapper.Mapper;
-import com.popokis.popok.util.data.DatabaseUtil;
+import com.popokis.popok.util.data.BootstrapDatabase;
 import com.popokis.popok.util.data.mapper.CompanyResponseMapper;
 import com.popokis.popok.util.data.mapper.CompanyResponseMapper2;
 import com.popokis.popok.util.data.mapper.EmployeeResponseMapper;
@@ -26,12 +26,12 @@ class JoinTest {
   @BeforeAll
   static void initAll() {
     db = new Database(HikariConnectionPool.getInstance());
-    DatabaseUtil.createTestSchema(db);
+    BootstrapDatabase.createTestSchema(db);
   }
 
   @Test
   void getAllEmployeesForCompanyTest() {
-    FixedCachedRowSet rowSet = db.executeQuery(new CompanyEmployeesQuery(DatabaseUtil.COMPANY_ID));
+    FixedCachedRowSet rowSet = db.executeQuery(new CompanyEmployeesQuery(BootstrapDatabase.COMPANY_ID));
     rowSet.next();
 
     Mapper<CompanyResponse> deserializator = new CompanyResponseMapper();
@@ -43,7 +43,7 @@ class JoinTest {
 
   @Test
   void getEmployeeWithCompanyTest() {
-    FixedCachedRowSet rowSet = db.executeQuery(new EmployeeCompanyQuery(DatabaseUtil.EMPLOYEE_ID));
+    FixedCachedRowSet rowSet = db.executeQuery(new EmployeeCompanyQuery(BootstrapDatabase.EMPLOYEE_ID));
     rowSet.next();
 
     Mapper<EmployeeResponse> deserializator = new EmployeeResponseMapper();
@@ -55,7 +55,7 @@ class JoinTest {
 
   @Test
   void getAllEmployeesForCompanyWithAliasesTest() {
-    FixedCachedRowSet rowSet = db.executeQuery(new CompanyEmployeesAliasQuery(DatabaseUtil.COMPANY_ID));
+    FixedCachedRowSet rowSet = db.executeQuery(new CompanyEmployeesAliasQuery(BootstrapDatabase.COMPANY_ID));
     rowSet.next();
 
     Mapper<CompanyResponse> deserializator = new CompanyResponseMapper2();
@@ -67,7 +67,7 @@ class JoinTest {
 
   @AfterAll
   static void tearDownAll() {
-    DatabaseUtil.dropTestSchema(db);
+    BootstrapDatabase.dropTestSchema(db);
     db = null;
   }
 }

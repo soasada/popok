@@ -9,7 +9,7 @@ import com.popokis.popok.http.server.SimpleServer;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.serialization.http.RestResponseDeserializator;
 import com.popokis.popok.serialization.json.JacksonSerializator;
-import com.popokis.popok.util.data.DatabaseUtil;
+import com.popokis.popok.util.data.BootstrapDatabase;
 import com.popokis.popok.util.data.model.Company;
 import com.popokis.popok.util.http.TestingRouter;
 import org.junit.jupiter.api.AfterAll;
@@ -27,7 +27,7 @@ class CompanyApiTest {
   @BeforeAll
   static void initAll() {
     db = new Database(HikariConnectionPool.getInstance());
-    DatabaseUtil.createTestSchema(db);
+    BootstrapDatabase.createTestSchema(db);
     CLIENT = SimpleClient.getInstance();
     TESTING_SERVER = new SimpleServer(8080, "0.0.0.0", new TestingRouter());
     TESTING_SERVER.start();
@@ -46,7 +46,7 @@ class CompanyApiTest {
 
   @AfterAll
   static void tearDownAll() {
-    DatabaseUtil.dropTestSchema(db);
+    BootstrapDatabase.dropTestSchema(db);
     CLIENT = null;
     TESTING_SERVER.stop();
     db = null;

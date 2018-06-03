@@ -6,7 +6,7 @@ import com.popokis.popok.data.access.HikariConnectionPool;
 import com.popokis.popok.data.mapper.ListMapper;
 import com.popokis.popok.data.mapper.Mapper;
 import com.popokis.popok.data.query.BasicRepository;
-import com.popokis.popok.util.data.DatabaseUtil;
+import com.popokis.popok.util.data.BootstrapDatabase;
 import com.popokis.popok.util.data.mapper.TestModelMapper;
 import com.popokis.popok.util.data.model.TestModel;
 import com.popokis.popok.util.query.TestRepository;
@@ -29,7 +29,7 @@ class DatabaseTest {
   static void initAll() {
     testRepository = new TestRepository();
     db = new Database(HikariConnectionPool.getInstance());
-    DatabaseUtil.createTestSchema(db);
+    BootstrapDatabase.createTestSchema(db);
   }
 
   @Test
@@ -77,7 +77,7 @@ class DatabaseTest {
   @AfterAll
   static void tearDownAll() {
     testRepository = null;
-    DatabaseUtil.dropTestSchema(db);
+    BootstrapDatabase.dropTestSchema(db);
     db = null;
   }
 

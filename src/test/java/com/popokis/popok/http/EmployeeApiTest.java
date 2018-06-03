@@ -5,7 +5,7 @@ import com.popokis.popok.data.access.HikariConnectionPool;
 import com.popokis.popok.http.client.Client;
 import com.popokis.popok.http.client.SimpleClient;
 import com.popokis.popok.http.server.SimpleServer;
-import com.popokis.popok.util.data.DatabaseUtil;
+import com.popokis.popok.util.data.BootstrapDatabase;
 import com.popokis.popok.util.http.TestingRouter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +19,7 @@ class EmployeeApiTest {
   @BeforeAll
   static void initAll() {
     db = new Database(HikariConnectionPool.getInstance());
-    DatabaseUtil.createTestSchema(db);
+    BootstrapDatabase.createTestSchema(db);
     CLIENT = SimpleClient.getInstance();
     TESTING_SERVER = new SimpleServer(8080, "0.0.0.0", new TestingRouter());
     TESTING_SERVER.start();
@@ -29,7 +29,7 @@ class EmployeeApiTest {
 
   @AfterAll
   static void tearDownAll() {
-    DatabaseUtil.dropTestSchema(db);
+    BootstrapDatabase.dropTestSchema(db);
     CLIENT = null;
     TESTING_SERVER.stop();
     db = null;

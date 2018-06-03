@@ -13,12 +13,12 @@ import com.popokis.popok.util.query.schema.DropCompanyTableQuery;
 import com.popokis.popok.util.query.schema.DropEmployeeTableQuery;
 import com.popokis.popok.util.query.schema.DropTestTableQuery;
 
-public final class DatabaseUtil {
+public final class BootstrapDatabase {
 
   public static long COMPANY_ID;
   public static long EMPLOYEE_ID;
 
-  private DatabaseUtil() {}
+  private BootstrapDatabase() {}
 
   public static void createTestSchema(Database db) {
     db.executeDML(new CreateTestTableQuery());
