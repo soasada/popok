@@ -16,6 +16,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static com.popokis.popok.util.data.FakeData.TEST_DELETE_ID;
+import static com.popokis.popok.util.data.FakeData.TEST_FIND_ID;
+import static com.popokis.popok.util.data.FakeData.TEST_MODIFY_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,40 +36,37 @@ class DatabaseTest {
   }
 
   @Test
-  void insertAndSelectTest() {
-    long id = insert();
-    FixedCachedRowSet fixedCachedRowSet = db.executeQuery(testRepository.findQuery().find(id));
+  void insertTest() {
+    long id = db.executeInsert(testRepository.saveQuery().insert(TestModel.create(null, "test")));
+    assertTrue(id >= 0);
+  }
+
+  @Test
+  void findTest() {
+    FixedCachedRowSet fixedCachedRowSet = db.executeQuery(testRepository.findQuery().find(TEST_FIND_ID));
     fixedCachedRowSet.next();
     String name = fixedCachedRowSet.getString("name");
 
-    assertTrue(id >= 0);
-    assertEquals("test", name);
+    assertEquals("findTest", name);
   }
 
   @Test
-  void insertAndDeleteTest() {
-    long id = insert();
-    int affectedRow = db.executeDML(testRepository.removeQuery().delete(id));
+  void deleteTest() {
+    int affectedRow = db.executeDML(testRepository.removeQuery().delete(TEST_DELETE_ID));
 
     assertEquals(1, affectedRow);
   }
 
   @Test
-  void insertAndUpdateTest() {
+  void updateTest() {
     String expectedName = "test2";
-
-    long id = insert();
-    int affectedRow = db.executeDML(testRepository.modifyQuery().update(TestModel.create(id, expectedName)));
-    FixedCachedRowSet fixedCachedRowSet = db.executeQuery(testRepository.findQuery().find(id));
-    fixedCachedRowSet.next();
+    int affectedRow = db.executeDML(testRepository.modifyQuery().update(TestModel.create(TEST_MODIFY_ID, expectedName)));
 
     assertEquals(1, affectedRow);
-    assertEquals(expectedName, fixedCachedRowSet.getString("name"));
   }
 
   @Test
-  void insertAndGetAllTest() {
-    insert();
+  void getAllTest() {
     FixedCachedRowSet fixedCachedRowSet = db.executeQuery(testRepository.allQuery().all());
     Mapper<List<TestModel>> mapper = new ListMapper<>(new TestModelMapper());
     List<TestModel> testModels = mapper.map(fixedCachedRowSet);
@@ -79,9 +79,5 @@ class DatabaseTest {
     testRepository = null;
     BootstrapDatabase.dropTestSchema(db);
     db = null;
-  }
-
-  private long insert() {
-    return db.executeInsert(testRepository.saveQuery().insert(TestModel.create(null, "test")));
   }
 }

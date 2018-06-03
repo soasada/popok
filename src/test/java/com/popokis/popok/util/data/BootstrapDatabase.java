@@ -8,6 +8,10 @@ import com.popokis.popok.util.query.CompanyRepository;
 import com.popokis.popok.util.query.EmployeeRepository;
 import com.popokis.popok.util.query.TestingQueryFactory;
 
+import static com.popokis.popok.util.data.FakeData.TEST_DELETE_ID;
+import static com.popokis.popok.util.data.FakeData.TEST_FIND_ID;
+import static com.popokis.popok.util.data.FakeData.TEST_MODIFY_ID;
+
 public final class BootstrapDatabase {
 
   public static long COMPANY_ID;
@@ -29,6 +33,7 @@ public final class BootstrapDatabase {
         "ON UPDATE NO ACTION)"));
 
     loadTestData(db);
+    loadCompanyEmployeeData(db);
   }
 
   public static void dropTestSchema(Database db) {
@@ -38,6 +43,12 @@ public final class BootstrapDatabase {
   }
 
   private static void loadTestData(Database db) {
+    db.executeInsert(TestingQueryFactory.create("INSERT INTO test (id, name) VALUES (" + TEST_FIND_ID + ", 'findTest')"));
+    db.executeInsert(TestingQueryFactory.create("INSERT INTO test (id, name) VALUES (" + TEST_DELETE_ID + ", 'deleteTest')"));
+    db.executeInsert(TestingQueryFactory.create("INSERT INTO test (id, name) VALUES (" + TEST_MODIFY_ID + ", 'modifyTest')"));
+  }
+
+  private static void loadCompanyEmployeeData(Database db) {
     BasicRepository<Company> companyRepository = new CompanyRepository();
     BasicRepository<Employee> employeeRepository = new EmployeeRepository();
 
