@@ -1,14 +1,9 @@
 package com.popokis.popok.http.handler.http;
 
-import com.clickferry.oceanus_lib.http.extractor.Extractor;
-import com.clickferry.oceanus_lib.http.manipulator.Manipulator;
-import com.clickferry.oceanus_lib.service.Service;
-import com.clickferry.oceanus_lib.souk.common.Deserializator;
-import com.clickferry.oceanus_lib.souk.common.JacksonSerializator;
-import com.clickferry.oceanus_lib.util.Identifiable;
-import com.clickferry.oceanus_lib.validate.Validator;
-import com.clickferry.oceanus_lib.value_boat.OceanusResponse;
-import com.clickferry.yarr.logger.YarrLogger;
+import com.popokis.popok.http.response.RestResponse;
+import com.popokis.popok.log.PopokLogger;
+import com.popokis.popok.serialization.json.JacksonSerializator;
+import com.popokis.popok.util.Identifiable;
 
 public final class DefaultServiceSyncHandler<Req extends Identifiable<Req>, Res> extends AbstractServiceSyncHandler<Req, Res> {
 
@@ -24,7 +19,7 @@ public final class DefaultServiceSyncHandler<Req extends Identifiable<Req>, Res>
                                    Manipulator<Req> requestManipulator,
                                    Service<Req, Res> service,
                                    Manipulator<Res> responseManipulator) {
-    super(extractor, YarrLogger.getLogger(loggerName), service);
+    super(extractor, PopokLogger.getLogger(loggerName), service);
     this.requestDeserializator = requestDeserializator;
     this.requestValidator = requestValidator;
     this.requestManipulator = requestManipulator;
@@ -52,7 +47,7 @@ public final class DefaultServiceSyncHandler<Req extends Identifiable<Req>, Res>
   }
 
   @Override
-  protected String serialize(OceanusResponse<Res> oceanusResponse) {
-    return new JacksonSerializator<>().serialize(oceanusResponse);
+  protected String serialize(RestResponse<Res> restResponse) {
+    return new JacksonSerializator<>().serialize(restResponse);
   }
 }

@@ -2,7 +2,6 @@ package com.popokis.popok.http.handler.http;
 
 import com.popokis.popok.http.ResponseSender;
 import com.popokis.popok.http.extractor.Extractor;
-import com.popokis.popok.http.response.Response;
 import com.popokis.popok.http.response.RestResponse;
 import com.popokis.popok.service.Service;
 import com.popokis.popok.util.Identifiable;
@@ -29,15 +28,7 @@ public abstract class AbstractHttpAsyncHandler<Req extends Identifiable, Res>
   protected final void finalizeResponse(CompletableFuture<HttpResponse<String>> response, HttpServerExchange exchange) {
     response
         .thenApply(HttpResponse::body)
-        .thenApply(rawResponse -> {
-          RestResponse<Res> restResponse = deserializeResponse(rawResponse);
-
-          if (!restResponse.response().code().equals(OK_CODE)) {
-            ResponseSender.asJson(exchange, request().id(), restResponse);
-          }
-
-          return manageResponse(restResponse, exchange);
-        })
+        .thenApply(rawResponse -> manageResponse(unwrapResponse(rawResponse), exchange))
         .whenComplete((stringResponse, exception) -> {
           if (Objects.nonNull(stringResponse)) {
             ResponseSender.asJson(exchange, stringResponse);
@@ -59,5 +50,15 @@ public abstract class AbstractHttpAsyncHandler<Req extends Identifiable, Res>
     // that there is no possibility of a race. Because the exchange is not thread safe this approach makes sure only one
     // thread can run at a time.
     exchange.dispatch(SameThreadExecutor.INSTANCE, () -> finalizeResponse(future, exchange));
+  }
+
+  private RestResponse<Res> unwrapResponse(String rawResponse, HttpServerExchange exchange) {
+    RestResponse<Res> restResponse = deserializeResponse(rawResponse);
+
+    if (!restResponse.response().code().equals(OK_CODE)) {
+      ResponseSender.asJson(exchange, request().id(), restResponse);
+    }
+
+    return restResponse;
   }
 }
