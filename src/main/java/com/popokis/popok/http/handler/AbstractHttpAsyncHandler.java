@@ -1,4 +1,4 @@
-package com.popokis.popok.http.handler.http;
+package com.popokis.popok.http.handler;
 
 import com.popokis.popok.http.ResponseSender;
 import com.popokis.popok.http.extractor.Extractor;
@@ -21,13 +21,17 @@ public abstract class AbstractHttpAsyncHandler<Req extends Identifiable, Res>
     super(extractor, logger, service);
   }
 
-  protected abstract Res middleware(String rawResponse, HttpServerExchange exchange);
+  protected String manageHttpResponse(HttpResponse<String> stringHttpResponse) {
+    return stringHttpResponse.body();
+  }
+
+  protected abstract Res responseMiddleware(String rawResponse, HttpServerExchange exchange);
 
   @Override
   protected final void finalizeResponse(CompletableFuture<HttpResponse<String>> response, HttpServerExchange exchange) {
     response
-        .thenApply(HttpResponse::body)
-        .thenApply(rawResponse -> manageResponse(middleware(rawResponse, exchange), exchange))
+        .thenApply(this::manageHttpResponse)
+        .thenApply(rawResponse -> manageResponse(responseMiddleware(rawResponse, exchange), exchange))
         .whenComplete((stringResponse, exception) -> {
           if (Objects.nonNull(stringResponse)) {
             ResponseSender.asJson(exchange, stringResponse);

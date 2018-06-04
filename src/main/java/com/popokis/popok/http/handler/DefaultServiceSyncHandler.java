@@ -1,11 +1,9 @@
-package com.popokis.popok.http.handler.http;
+package com.popokis.popok.http.handler;
 
 import com.popokis.popok.http.extractor.Extractor;
 import com.popokis.popok.http.manipulator.Manipulator;
-import com.popokis.popok.http.response.RestResponse;
 import com.popokis.popok.log.PopokLogger;
 import com.popokis.popok.serialization.Deserializator;
-import com.popokis.popok.serialization.json.JacksonSerializator;
 import com.popokis.popok.service.Service;
 import com.popokis.popok.util.Identifiable;
 import com.popokis.popok.util.validator.Validator;
@@ -49,10 +47,5 @@ public final class DefaultServiceSyncHandler<Req extends Identifiable, Res> exte
   @Override
   protected Res manipulateResponse(Res response) {
     return responseManipulator.manipulate(response);
-  }
-
-  @Override
-  protected String serialize(RestResponse<Res> restResponse) {
-    return new JacksonSerializator<>().serialize(restResponse);
   }
 }

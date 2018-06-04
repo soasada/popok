@@ -11,8 +11,8 @@ import com.popokis.popok.service.Service;
 import com.popokis.popok.util.validator.Validator;
 import io.undertow.server.HttpServerExchange;
 
-import static com.popokis.popok.http.handler.http.AbstractServiceHandler.OK_CODE;
-import static com.popokis.popok.http.handler.http.AbstractServiceHandler.OK_MESSAGE;
+import static com.popokis.popok.http.handler.AbstractServiceHandler.OK_CODE;
+import static com.popokis.popok.http.handler.AbstractServiceHandler.OK_MESSAGE;
 
 public final class DataBaseHandler<Req, Res> extends AbstractHandler<Req, Res> {
 
@@ -40,11 +40,6 @@ public final class DataBaseHandler<Req, Res> extends AbstractHandler<Req, Res> {
   }
 
   @Override
-  protected Req manipulateRequest(Req request) {
-    return request;
-  }
-
-  @Override
   public final void handleRequest(HttpServerExchange exchange) {
     String requestPayload = extractor.from(exchange);
     String requestId = "DB";
@@ -53,8 +48,8 @@ public final class DataBaseHandler<Req, Res> extends AbstractHandler<Req, Res> {
       Req deserializedRequest = deserializeRequest(requestPayload);
       validate(deserializedRequest);
       Res response = service.call(deserializedRequest);
-      RestResponse<Res> oceanusResponse = RestResponse.create(Response.create(requestId, OK_CODE, OK_MESSAGE), response);
-      String serializedResponse = new JacksonSerializator<>().serialize(oceanusResponse);
+      RestResponse<Res> restResponse = RestResponse.create(Response.create(requestId, OK_CODE, OK_MESSAGE), response);
+      String serializedResponse = new JacksonSerializator<>().serialize(restResponse);
       ResponseSender.asJson(exchange, serializedResponse);
     } catch (Exception e) {
       ResponseSender.asJson(exchange, requestId, e, logger);

@@ -1,4 +1,4 @@
-package com.popokis.popok.http.handler.http;
+package com.popokis.popok.http.handler;
 
 import com.popokis.popok.http.ResponseSender;
 import com.popokis.popok.http.extractor.Extractor;
