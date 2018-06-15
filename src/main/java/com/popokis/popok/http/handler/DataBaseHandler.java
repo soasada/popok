@@ -9,34 +9,28 @@ import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.serialization.json.JacksonSerializator;
 import com.popokis.popok.service.Service;
 import com.popokis.popok.util.validator.Validator;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import org.slf4j.Logger;
 
-import static com.popokis.popok.http.handler.AbstractServiceHandler.OK_CODE;
-import static com.popokis.popok.http.handler.AbstractServiceHandler.OK_MESSAGE;
+public final class DataBaseHandler<R, S> implements HttpHandler {
 
-public final class DataBaseHandler<Req, Res> extends AbstractHandler<Req, Res> {
-
-  private final Deserializator<Req,String> requestDeserializator;
-  private final Validator<Req> requestValidator;
+  private final Extractor extractor;
+  private final Logger logger;
+  private final Service<R, S> service;
+  private final Deserializator<R, String> requestDeserializator;
+  private final Validator<R> requestValidator;
 
   public DataBaseHandler(Extractor extractor,
                          String loggerName,
-                         Deserializator<Req, String> requestDeserializator,
-                         Validator<Req> requestValidator,
-                         Service<Req, Res> service) {
-    super(extractor, PopokLogger.getLogger(loggerName), service);
+                         Service<R, S> service,
+                         Deserializator<R, String> requestDeserializator,
+                         Validator<R> requestValidator) {
+    this.extractor = extractor;
+    this.logger = PopokLogger.getLogger(loggerName);
+    this.service = service;
     this.requestDeserializator = requestDeserializator;
     this.requestValidator = requestValidator;
-  }
-
-  @Override
-  protected Req deserializeRequest(String requestPayload) {
-    return requestDeserializator.deserialize(requestPayload);
-  }
-
-  @Override
-  protected void validate(Req request) {
-    requestValidator.validate(request);
   }
 
   @Override
@@ -45,10 +39,10 @@ public final class DataBaseHandler<Req, Res> extends AbstractHandler<Req, Res> {
     String requestId = "DB";
 
     try {
-      Req deserializedRequest = deserializeRequest(requestPayload);
-      validate(deserializedRequest);
-      Res response = service.call(deserializedRequest);
-      RestResponse<Res> restResponse = RestResponse.create(Response.create(requestId, OK_CODE, OK_MESSAGE), response);
+      R deserializedRequest = requestDeserializator.deserialize(requestPayload);
+      requestValidator.validate(deserializedRequest);
+      S response = service.call(deserializedRequest);
+      RestResponse<S> restResponse = RestResponse.create(Response.ok(requestId), response);
       String serializedResponse = new JacksonSerializator<>().serialize(restResponse);
       ResponseSender.asJson(exchange, serializedResponse);
     } catch (Exception e) {

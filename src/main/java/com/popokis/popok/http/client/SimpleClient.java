@@ -47,7 +47,7 @@ public final class SimpleClient implements Client<String> {
   }
 
   private String httpRequest(HttpRequest request) {
-    HttpClient client = HttpClient.newHttpClient();
+    HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.SECURE).build();
 
     try {
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandler.asString());

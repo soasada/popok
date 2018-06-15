@@ -16,7 +16,7 @@ import com.popokis.popok.util.validator.IdValidator;
 import com.popokis.popok.util.validator.Validator;
 import io.undertow.server.HttpHandler;
 
-public final class BasicHandlerFactory<T> {
+public final class DBHandlerFactory<T> {
 
   private final Validator<T> createValidator;
   private final Validator<T> updateValidator;
@@ -26,13 +26,13 @@ public final class BasicHandlerFactory<T> {
   private final Mapper<T> mapper;
   private final Database db;
 
-  public BasicHandlerFactory(Validator<T> createValidator,
-                             Validator<T> updateValidator,
-                             String loggerName,
-                             Class<T> requestType,
-                             BasicRepository<T> repository,
-                             Mapper<T> mapper,
-                             Database db) {
+  public DBHandlerFactory(Validator<T> createValidator,
+                          Validator<T> updateValidator,
+                          String loggerName,
+                          Class<T> requestType,
+                          BasicRepository<T> repository,
+                          Mapper<T> mapper,
+                          Database db) {
     this.createValidator = createValidator;
     this.updateValidator = updateValidator;
     this.loggerName = loggerName;
@@ -46,44 +46,44 @@ public final class BasicHandlerFactory<T> {
     return new DataBaseHandler<>(
         new PostExtractor(),
         loggerName,
+        new InsertDBService<>(db, repository.saveQuery()),
         new JacksonDeserializator<>(requestType),
-        createValidator,
-        new InsertDBService<>(db, repository.saveQuery()));
+        createValidator);
   }
 
   public HttpHandler update() {
     return new DataBaseHandler<>(
         new PostExtractor(),
         loggerName,
+        new UpdateDBService<>(db, repository.modifyQuery()),
         new JacksonDeserializator<>(requestType),
-        updateValidator,
-        new UpdateDBService<>(db, repository.modifyQuery()));
+        updateValidator);
   }
 
   public HttpHandler remove() {
     return new DataBaseHandler<>(
         new IdExtractor(),
         loggerName,
+        new RemoveDBService<>(db, repository.removeQuery()),
         Long::parseLong,
-        new IdValidator(new BasicValidator<>()),
-        new RemoveDBService<>(db, repository.removeQuery()));
+        new IdValidator(new BasicValidator<>()));
   }
 
   public HttpHandler search() {
     return new DataBaseHandler<>(
         new IdExtractor(),
         loggerName,
+        new SearchDBService<>(db, repository.findQuery(), mapper),
         Long::parseLong,
-        new IdValidator(new BasicValidator<>()),
-        new SearchDBService<>(db, repository.findQuery(), mapper));
+        new IdValidator(new BasicValidator<>()));
   }
 
   public HttpHandler all() {
     return new DataBaseHandler<>(
         e -> "",
         loggerName,
+        new DefaultAllService<>(db, repository.allQuery(), mapper),
         s -> null,
-        new BasicValidator<>(),
-        new DefaultAllService<>(db, repository.allQuery(), mapper));
+        new BasicValidator<>());
   }
 }

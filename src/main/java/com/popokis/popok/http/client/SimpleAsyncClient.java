@@ -47,7 +47,7 @@ public final class SimpleAsyncClient implements Client<CompletableFuture<HttpRes
   }
 
   private CompletableFuture<HttpResponse<String>> httpRequest(HttpRequest request) {
-    HttpClient client = HttpClient.newHttpClient();
+    HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.SECURE).build();
     return client.sendAsync(request, HttpResponse.BodyHandler.asString());
   }
 }

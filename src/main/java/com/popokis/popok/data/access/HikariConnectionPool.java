@@ -16,7 +16,6 @@ public final class HikariConnectionPool implements ConnectionPool<HikariDataSour
     Config config = ConfigFactory.defaultApplication().resolve();
     HikariConfig hikariConfig = null;
 
-    // by default test (if present)
     switch (config.getString("appEnv")) {
       case "test":
         hikariConfig = getConfig(config.getConfig("test"));
