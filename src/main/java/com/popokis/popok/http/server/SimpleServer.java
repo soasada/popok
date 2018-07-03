@@ -1,11 +1,10 @@
 package com.popokis.popok.http.server;
 
 import com.popokis.popok.http.router.Router;
-import io.undertow.Handlers;
+import com.popokis.popok.http.router.RouterUtils;
 import io.undertow.Undertow;
-import io.undertow.server.RoutingHandler;
 
-public final class SimpleServer {
+public final class SimpleServer implements PopokHttpServer {
 
   private final int port;
   private final String host;
@@ -17,24 +16,22 @@ public final class SimpleServer {
     this.host = host;
     this.router = router;
 
-    RoutingHandler tempHandler = new RoutingHandler();
-    for (var route : router.routes()) {
-      tempHandler.add(route.method(), route.endpoint(), route.handler());
-    }
-
     server = Undertow.builder()
-        .addHttpListener(port, host, Handlers.routing().addAll(tempHandler))
+        .addHttpListener(port, host, RouterUtils.loadRoutes(router))
         .build();
   }
 
+  @Override
   public void start() {
     server.start();
   }
 
+  @Override
   public void stop() {
     server.stop();
   }
 
+  @Override
   public String url() {
     return "http://" + host + ":" + port + router.version();
   }
