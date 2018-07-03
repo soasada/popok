@@ -4,7 +4,6 @@ import com.popokis.popok.http.ResponseSender;
 import com.popokis.popok.http.extractor.Extractor;
 import com.popokis.popok.http.response.Response;
 import com.popokis.popok.http.response.RestResponse;
-import com.popokis.popok.log.PopokLogger;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.serialization.json.JacksonSerializator;
 import com.popokis.popok.service.Service;
@@ -12,6 +11,7 @@ import com.popokis.popok.util.validator.Validator;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class DataBaseHandler<R, S> implements HttpHandler {
 
@@ -27,7 +27,7 @@ public final class DataBaseHandler<R, S> implements HttpHandler {
                          Deserializator<R, String> requestDeserializator,
                          Validator<R> requestValidator) {
     this.extractor = extractor;
-    this.logger = PopokLogger.getLogger(loggerName);
+    this.logger = LoggerFactory.getLogger(loggerName);
     this.service = service;
     this.requestDeserializator = requestDeserializator;
     this.requestValidator = requestValidator;

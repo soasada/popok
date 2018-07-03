@@ -3,8 +3,8 @@ package com.popokis.popok.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.popokis.popok.http.response.Response;
 import com.popokis.popok.http.response.RestResponse;
-import com.popokis.popok.log.context.LoggerContext;
 import com.popokis.popok.serialization.json.CustomObjectMapper;
+import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
 
 public final class ExceptionUtils {
@@ -21,9 +21,9 @@ public final class ExceptionUtils {
   }
 
   public static void logException(Throwable e, String requestId, Logger logger) {
-    LoggerContext.addToContext("request-id", requestId);
+    ThreadContext.put("request-id", requestId);
     logger.error("Exception", e);
-    LoggerContext.clearContext();
+    ThreadContext.clearMap();
   }
 
   public static String errorResponse(String requestId, String code, String message) {

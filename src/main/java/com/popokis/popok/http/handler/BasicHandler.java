@@ -5,8 +5,6 @@ import com.popokis.popok.http.extractor.Extractor;
 import com.popokis.popok.http.manipulator.Manipulator;
 import com.popokis.popok.http.response.Response;
 import com.popokis.popok.http.response.RestResponse;
-import com.popokis.popok.log.PopokLogger;
-import com.popokis.popok.log.context.LoggerContext;
 import com.popokis.popok.serialization.Deserializator;
 import com.popokis.popok.serialization.json.JacksonSerializator;
 import com.popokis.popok.service.Service;
@@ -14,7 +12,9 @@ import com.popokis.popok.util.Identifiable;
 import com.popokis.popok.util.validator.Validator;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class BasicHandler<R extends Identifiable, S> implements HttpHandler {
 
@@ -34,7 +34,7 @@ public final class BasicHandler<R extends Identifiable, S> implements HttpHandle
                       Manipulator<R> requestManipulator,
                       Manipulator<S> responseManipulator) {
     this.extractor = extractor;
-    this.logger = PopokLogger.getLogger(loggerName);
+    this.logger = LoggerFactory.getLogger(loggerName);
     this.service = service;
     this.requestDeserializator = requestDeserializator;
     this.requestValidator = requestValidator;
@@ -65,15 +65,13 @@ public final class BasicHandler<R extends Identifiable, S> implements HttpHandle
     }
   }
 
-  protected final void logRequest(HttpServerExchange exchange, String requestPayload) {
-    LoggerContext.addToContext("request-serviceURL", exchange.getRequestURL());
-    LoggerContext.addToContext("request-payload", requestPayload);
-    logger.info("Incoming request");
+  private void logRequest(HttpServerExchange exchange, String requestPayload) {
+    ThreadContext.put("request-serviceURL", exchange.getRequestURL());
+    logger.info(requestPayload);
   }
 
-  protected final void logResponse(String response) {
-    LoggerContext.addToContext("response", response);
-    logger.info("Response");
-    LoggerContext.clearContext();
+  private void logResponse(String response) {
+    logger.info(response);
+    ThreadContext.clearMap();
   }
 }
