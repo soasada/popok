@@ -1,11 +1,14 @@
 package com.popokis.popok.http;
 
 import com.popokis.popok.http.response.RestResponse;
+import com.popokis.popok.template.Templating;
 import com.popokis.popok.util.ExceptionUtils;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import io.undertow.util.StatusCodes;
 import org.slf4j.Logger;
+
+import java.util.Map;
 
 import static com.popokis.popok.util.ExceptionUtils.errorResponse;
 import static com.popokis.popok.util.ExceptionUtils.logException;
@@ -33,5 +36,10 @@ public final class ResponseSender {
     exchange.setStatusCode(StatusCodes.OK);
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
     exchange.getResponseSender().send(response);
+  }
+
+  public static void asHtml(HttpServerExchange exchange, String templatePath, Map<String, Object> data) {
+    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
+    exchange.getResponseSender().send(Templating.getInstance().render(templatePath, data));
   }
 }
