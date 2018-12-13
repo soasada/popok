@@ -1,19 +1,20 @@
 package com.popokis.popok.http.client;
 
-import jdk.incubator.http.HttpClient;
-import jdk.incubator.http.HttpRequest;
-import jdk.incubator.http.HttpResponse;
-
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 public final class SimpleAsyncClient implements Client<CompletableFuture<HttpResponse<String>>> {
 
   private final Duration timeout;
+  private final HttpClient httpClient;
 
   private SimpleAsyncClient() {
-    timeout = Duration.ofMinutes(2);
+    this.timeout = Duration.ofMinutes(2);
+    this.httpClient = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
   }
 
   private static class Holder {
@@ -40,14 +41,13 @@ public final class SimpleAsyncClient implements Client<CompletableFuture<HttpRes
         .uri(URI.create(url))
         .timeout(timeout)
         .header("Content-Type", "application/json")
-        .POST(HttpRequest.BodyPublisher.fromString(jsonBody))
+        .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
         .build();
 
     return httpRequest(request);
   }
 
   private CompletableFuture<HttpResponse<String>> httpRequest(HttpRequest request) {
-    HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.SECURE).build();
-    return client.sendAsync(request, HttpResponse.BodyHandler.asString());
+    return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
   }
 }

@@ -1,7 +1,6 @@
 package com.popokis.popok.data.access;
 
 import com.popokis.popok.data.query.Query;
-import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
@@ -17,11 +16,11 @@ import java.sql.Statement;
  *
  * @since 0.1.0
  */
-public final class Database {
+public final class Database<T> {
 
-  private final ConnectionPool<HikariDataSource> connectionPool;
+  private final ConnectionPool<T> connectionPool;
 
-  public Database(ConnectionPool<HikariDataSource> connectionPool) {
+  public Database(ConnectionPool<T> connectionPool) {
     this.connectionPool = connectionPool;
   }
 

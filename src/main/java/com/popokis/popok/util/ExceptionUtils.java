@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.popokis.popok.http.response.Response;
 import com.popokis.popok.http.response.RestResponse;
 import com.popokis.popok.serialization.json.CustomObjectMapper;
-import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 public final class ExceptionUtils {
 
-  private ExceptionUtils() {
-  }
+  private ExceptionUtils() {}
 
   public static Throwable getRootCause(Throwable throwable) {
     if (throwable.getCause() != null) {
@@ -21,9 +20,9 @@ public final class ExceptionUtils {
   }
 
   public static void logException(Throwable e, String requestId, Logger logger) {
-    ThreadContext.put("request-id", requestId);
+    MDC.put("request-id", requestId);
     logger.error("Exception", e);
-    ThreadContext.clearMap();
+    MDC.clear();
   }
 
   public static String errorResponse(String requestId, String code, String message) {

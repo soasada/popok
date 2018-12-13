@@ -1,19 +1,20 @@
 package com.popokis.popok.http.client;
 
-import jdk.incubator.http.HttpClient;
-import jdk.incubator.http.HttpRequest;
-import jdk.incubator.http.HttpResponse;
-
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.Duration;
 
 public final class SimpleClient implements Client<String> {
 
   private final Duration timeout;
+  private final HttpClient httpClient;
 
   private SimpleClient() {
-    timeout = Duration.ofMinutes(2);
+    this.timeout = Duration.ofMinutes(2);
+    this.httpClient = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
   }
 
   private static class Holder {
@@ -40,17 +41,15 @@ public final class SimpleClient implements Client<String> {
         .uri(URI.create(url))
         .timeout(timeout)
         .header("Content-Type", "application/json")
-        .POST(HttpRequest.BodyPublisher.fromString(jsonBody))
+        .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
         .build();
 
     return httpRequest(request);
   }
 
   private String httpRequest(HttpRequest request) {
-    HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.SECURE).build();
-
     try {
-      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandler.asString());
+      HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
       return response.body();
     } catch (IOException | InterruptedException e) {
       throw new RuntimeException(e);

@@ -12,9 +12,10 @@ import com.popokis.popok.util.Identifiable;
 import com.popokis.popok.util.validator.Validator;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+import java.util.Objects;
 
 public final class BasicHandler<R extends Identifiable, S> implements HttpHandler {
 
@@ -27,14 +28,14 @@ public final class BasicHandler<R extends Identifiable, S> implements HttpHandle
   private final Manipulator<S> responseManipulator;
 
   public BasicHandler(Extractor extractor,
-                      String loggerName,
+                      Logger logger,
                       Service<R, S> service,
                       Deserializator<R, String> requestDeserializator,
                       Validator<R> requestValidator,
                       Manipulator<R> requestManipulator,
                       Manipulator<S> responseManipulator) {
     this.extractor = extractor;
-    this.logger = LoggerFactory.getLogger(loggerName);
+    this.logger = logger;
     this.service = service;
     this.requestDeserializator = requestDeserializator;
     this.requestValidator = requestValidator;
@@ -45,7 +46,7 @@ public final class BasicHandler<R extends Identifiable, S> implements HttpHandle
   @Override
   public void handleRequest(HttpServerExchange exchange) {
     String payload = extractor.from(exchange);
-    logRequest(exchange, payload);
+    if (Objects.nonNull(logger)) logRequest(exchange, payload);
     String requestId = "-1";
 
     try {
@@ -57,7 +58,7 @@ public final class BasicHandler<R extends Identifiable, S> implements HttpHandle
       S manipulatedResponse = responseManipulator.manipulate(serviceResponse);
       RestResponse<S> restResponse = RestResponse.create(Response.ok(requestId), manipulatedResponse);
       String stringResponse = new JacksonSerializator<>().serialize(restResponse);
-      logResponse(stringResponse);
+      if (Objects.nonNull(logger)) logResponse(stringResponse);
       ResponseSender.asJson(exchange, stringResponse);
     } catch (Exception e) {
       ResponseSender.asJson(exchange, requestId, e, logger);
@@ -66,12 +67,12 @@ public final class BasicHandler<R extends Identifiable, S> implements HttpHandle
   }
 
   private void logRequest(HttpServerExchange exchange, String requestPayload) {
-    ThreadContext.put("request-serviceURL", exchange.getRequestURL());
+    MDC.put("request-serviceURL", exchange.getRequestURL());
     logger.info(requestPayload);
   }
 
   private void logResponse(String response) {
     logger.info(response);
-    ThreadContext.clearMap();
+    MDC.clear();
   }
 }
