@@ -42,4 +42,9 @@ public final class ResponseSender {
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
     exchange.getResponseSender().send(Templating.getInstance().render(templatePath, data));
   }
+
+  public static void ok(HttpServerExchange exchange) {
+    exchange.setStatusCode(StatusCodes.OK);
+    exchange.getResponseSender().send("OK");
+  }
 }

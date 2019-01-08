@@ -30,6 +30,7 @@ public final class SimpleClient implements Client<String> {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .timeout(timeout)
+        .GET()
         .build();
 
     return httpRequest(request);

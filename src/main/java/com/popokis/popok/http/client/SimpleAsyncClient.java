@@ -30,6 +30,7 @@ public final class SimpleAsyncClient implements Client<CompletableFuture<HttpRes
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .timeout(timeout)
+        .GET()
         .build();
 
     return httpRequest(request);
