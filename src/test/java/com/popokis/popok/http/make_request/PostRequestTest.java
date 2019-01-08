@@ -4,11 +4,11 @@ import com.popokis.popok.http.client.SimpleAsyncClient;
 import com.popokis.popok.http.client.SimpleClient;
 import com.popokis.popok.http.server.SimpleServer;
 import com.popokis.popok.util.http.TestingRouter;
-import jdk.incubator.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
