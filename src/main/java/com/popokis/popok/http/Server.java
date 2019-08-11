@@ -26,7 +26,7 @@ public final class Server {
   private char[] keyStorePassword;
 
   private Server(Builder builder) {
-    try (InputStream fi = Server.class.getResourceAsStream(File.separator + "app.properties")) {
+    try (InputStream fi = Server.class.getResourceAsStream(File.separator + builder.propertiesFilename)) {
       Properties appProps = new Properties();
       appProps.load(fi);
 
@@ -101,11 +101,17 @@ public final class Server {
   public static class Builder {
     private final HttpHandler router;
 
+    private String propertiesFilename = "app.properties";
     private boolean isHttps = false;
     private String keyStorePath = "";
 
     public Builder(HttpHandler router) {
       this.router = router;
+    }
+
+    public Builder propertiesFilename(String name) {
+      this.propertiesFilename = name;
+      return this;
     }
 
     public Builder enableHttps() {
