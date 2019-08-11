@@ -56,3 +56,4 @@ src/test/scala
 src/test/scala-2.11
 
 *.iml
+.attach_*
