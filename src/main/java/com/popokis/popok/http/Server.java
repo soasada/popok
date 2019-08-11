@@ -49,7 +49,7 @@ public final class Server {
         this.keyStorePassword = keyStorePassword.toCharArray();
 
         this.server = Undertow.builder()
-            .setServerOption(UndertowOptions.ENABLE_HTTP2, true)
+            .setServerOption(UndertowOptions.ENABLE_HTTP2, builder.enableHttp2)
             .addHttpListener(Integer.parseInt(httpPort), address)
             .addHttpsListener(Integer.parseInt(httpsPort), address, createSSLContext(loadKeyStore(builder.keyStorePath)))
             .setHandler(builder.redirectToHttps ? withHttpsRedirect(builder.router, httpsPort) : builder.router)
@@ -124,6 +124,7 @@ public final class Server {
     private String propertiesFilename = "app.properties";
     private boolean isHttps = false;
     private boolean redirectToHttps = false;
+    private boolean enableHttp2 = false;
     private String keyStorePath = "";
 
     public Builder(HttpHandler router) {
@@ -142,6 +143,11 @@ public final class Server {
 
     public Builder redirectToHttps() {
       this.redirectToHttps = true;
+      return this;
+    }
+
+    public Builder enableHttp2() {
+      this.enableHttp2 = true;
       return this;
     }
 
