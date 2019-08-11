@@ -1,8 +1,12 @@
 package com.popokis.popok.http;
 
+import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
+import io.undertow.attribute.ExchangeAttributes;
 import io.undertow.server.HttpHandler;
+import io.undertow.util.Headers;
+import io.undertow.util.StatusCodes;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -18,6 +22,8 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Objects;
 import java.util.Properties;
+
+import static io.undertow.predicate.Predicates.secure;
 
 public final class Server {
 
@@ -46,7 +52,7 @@ public final class Server {
             .setServerOption(UndertowOptions.ENABLE_HTTP2, true)
             .addHttpListener(Integer.parseInt(httpPort), address)
             .addHttpsListener(Integer.parseInt(httpsPort), address, createSSLContext(loadKeyStore(builder.keyStorePath)))
-            .setHandler(builder.router)
+            .setHandler(builder.redirectToHttps ? withHttpsRedirect(builder.router, httpsPort) : builder.router)
             .build();
       } else {
         this.server = Undertow.builder()
@@ -98,11 +104,26 @@ public final class Server {
     }
   }
 
+  private HttpHandler withHttpsRedirect(HttpHandler router, String httpsPort) {
+    return Handlers.header(
+        Handlers.predicate(
+            secure(),
+            router,
+            exchange -> {
+              String httpsUrl = "https://" + exchange.getHostName() + ":" + httpsPort + exchange.getRelativePath();
+              exchange.getResponseHeaders().add(Headers.LOCATION, httpsUrl);
+              exchange.setStatusCode(StatusCodes.MOVED_PERMANENTLY);
+            }
+        ), "x-undertow-transport", ExchangeAttributes.transportProtocol()
+    );
+  }
+
   public static class Builder {
     private final HttpHandler router;
 
     private String propertiesFilename = "app.properties";
     private boolean isHttps = false;
+    private boolean redirectToHttps = false;
     private String keyStorePath = "";
 
     public Builder(HttpHandler router) {
@@ -116,6 +137,11 @@ public final class Server {
 
     public Builder enableHttps() {
       this.isHttps = true;
+      return this;
+    }
+
+    public Builder redirectToHttps() {
+      this.redirectToHttps = true;
       return this;
     }
 
