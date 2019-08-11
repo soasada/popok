@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AsyncJSONParserTest {
@@ -38,14 +39,35 @@ class AsyncJSONParserTest {
     assertEquals(expected, actual);
   }
 
+  @Test
+  void shouldParseJsonChunks() throws IOException {
+    Model expected = new Model("TEST", LocalDateTime.parse("2019-08-11T21:33:20.989957"), List.of(1, 2, 3));
+    List<String> jsonChunks = List.of(
+        "{",
+        "\"id\":\"TEST\",",
+        "\"timestamp\":\"2019-08-11T21:33:20.989957\",",
+        "\"values\":[1,2",
+        ",3]",
+        "}"
+    );
+    JsonParser nonBlockingByteArrayParser = JSON_FACTORY.createNonBlockingByteArrayParser();
+    AsyncJSONParser asyncJSONParser = new AsyncJSONParser(nonBlockingByteArrayParser, MAPPER, true);
+    List<byte[]> bytesChunks = jsonChunks.stream().map(String::getBytes).collect(toList());
+    List<TokenBuffer> tokens = asyncJSONParser.chunks(bytesChunks);
+    Model actual = MAPPER.readValue(tokens.get(0).asParser(), Model.class);
+    asyncJSONParser.endOfInput();
+    nonBlockingByteArrayParser.close();
+
+    assertEquals(expected, actual);
+  }
+
   @EqualsAndHashCode
   private static final class Model {
     private String id;
     private LocalDateTime timestamp;
     private List<Integer> values;
 
-    public Model() {
-    }
+    public Model() {}
 
     public Model(String id, LocalDateTime timestamp, List<Integer> values) {
       this.id = id;
