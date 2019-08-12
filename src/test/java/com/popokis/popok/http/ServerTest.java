@@ -4,11 +4,17 @@ import io.undertow.Handlers;
 import io.undertow.util.StatusCodes;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class ServerTest {
+
+  private static final String HTTP_URL = "http://localhost:8080";
+  private static final String HTTPS_URL = "https://localhost:8443";
 
   @Test
   void shouldReturnHelloWorldResponse() {
-    Server.builder(
+    String expected = "Hello World!";
+    Server server = Server.builder(
         Handlers.path()
             .addPrefixPath("/api/v1", Handlers.routing()
                 .get("/hello", (exchange) -> {
@@ -17,6 +23,13 @@ class ServerTest {
                 })
             )
     )
-        .build().start();
+        .propertiesFilename("app_simple.properties")
+        .build();
+
+    server.start();
+    String actual = SimpleHttpClient.getInstance().get(HTTP_URL + "/api/v1/hello");
+    server.stop();
+
+    assertEquals(expected, actual);
   }
 }
