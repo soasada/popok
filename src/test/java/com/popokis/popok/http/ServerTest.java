@@ -54,4 +54,17 @@ class ServerTest {
       assertEquals(expected, actual);
     }
   }
+
+  @Test
+  void shouldThrowAnExceptionWhenMissingAddressProperty() {
+    String expected = "server.address property not found.";
+    try {
+      Server.builder(Handlers.path())
+          .propertiesFilename("app_missing_address.properties")
+          .build();
+    } catch (RuntimeException e) {
+      String actual = e.getMessage();
+      assertEquals(expected, actual);
+    }
+  }
 }
