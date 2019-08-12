@@ -5,6 +5,7 @@ import io.undertow.util.StatusCodes;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ServerTest {
 
@@ -31,5 +32,13 @@ class ServerTest {
     server.stop();
 
     assertEquals(expected, actual);
+  }
+
+  @Test
+  void shouldThrowAnExceptionWhenEmptyConfigFile() {
+    assertThrows(RuntimeException.class, () -> Server.builder(Handlers.path())
+        .propertiesFilename("app_empty.properties")
+        .build()
+    );
   }
 }
