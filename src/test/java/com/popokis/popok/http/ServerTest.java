@@ -43,7 +43,7 @@ class ServerTest {
   }
 
   @Test
-  void shouldThrowAnExceptionWhenMissingHttpPortConfiguration() {
+  void shouldThrowAnExceptionWhenMissingHttpPortProperty() {
     String expected = "server.http.port property not found.";
     try {
       Server.builder(Handlers.path())
