@@ -46,6 +46,7 @@ public final class Server {
         if (Objects.isNull(httpsPort)) throw new RuntimeException("server.https.port property not found.");
         String keyStorePassword = appProps.getProperty("security.key.store.password");
         if (Objects.isNull(keyStorePassword)) throw new RuntimeException("security.key.store.password property not found.");
+        if (builder.keyStorePath.isEmpty()) throw new RuntimeException("keyStorePath cannot be empty.");
         this.keyStorePassword = keyStorePassword.toCharArray();
 
         this.server = Undertow.builder()

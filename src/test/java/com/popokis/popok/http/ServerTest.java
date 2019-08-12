@@ -67,4 +67,28 @@ class ServerTest {
       assertEquals(expected, actual);
     }
   }
+
+  @Test
+  void shouldLetHttpsRequests() {
+    String expected = "Hello World!";
+    Server server = Server.builder(
+        Handlers.path()
+            .addPrefixPath("/api/v1", Handlers.routing()
+                .get("/hello", (exchange) -> {
+                  exchange.setStatusCode(StatusCodes.OK);
+                  exchange.getResponseSender().send("Hello World!");
+                })
+            )
+    )
+        .propertiesFilename("app_simple_https.properties")
+        .enableHttps()
+        .keyStorePath("keystore.jks")
+        .build();
+
+    server.start();
+    String actual = SimpleHttpClient.getInstance().get(HTTPS_URL + "/api/v1/hello");
+    server.stop();
+
+    assertEquals(expected, actual);
+  }
 }

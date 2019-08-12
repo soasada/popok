@@ -1,11 +1,19 @@
 package com.popokis.popok.http;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
+import java.util.Properties;
 
 public final class SimpleHttpClient {
 
@@ -13,11 +21,20 @@ public final class SimpleHttpClient {
   private final HttpClient httpClient;
 
   private SimpleHttpClient() {
-    this.timeout = Duration.ofMinutes(2);
-    this.httpClient = HttpClient.newBuilder()
-        .connectTimeout(timeout)
-        .followRedirects(HttpClient.Redirect.ALWAYS)
-        .build();
+    try {
+      final Properties props = System.getProperties();
+      props.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
+      SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
+      sslContext.init(null, trustAllCerts, new SecureRandom());
+      this.timeout = Duration.ofMinutes(2);
+      this.httpClient = HttpClient.newBuilder()
+          .connectTimeout(timeout)
+          .sslContext(sslContext)
+          .followRedirects(HttpClient.Redirect.ALWAYS)
+          .build();
+    } catch (NoSuchAlgorithmException | KeyManagementException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private static class Holder {
@@ -56,4 +73,18 @@ public final class SimpleHttpClient {
       throw new RuntimeException(e);
     }
   }
+
+  private static TrustManager[] trustAllCerts = new TrustManager[]{
+      new X509TrustManager() {
+        public X509Certificate[] getAcceptedIssuers() {
+          return null;
+        }
+
+        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+        }
+
+        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+        }
+      }
+  };
 }
