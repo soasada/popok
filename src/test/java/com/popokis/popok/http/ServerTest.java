@@ -41,4 +41,17 @@ class ServerTest {
         .build()
     );
   }
+
+  @Test
+  void shouldThrowAnExceptionWhenMissingHttpPortConfiguration() {
+    String expected = "server.http.port property not found.";
+    try {
+      Server.builder(Handlers.path())
+          .propertiesFilename("app_missing_http_port.properties")
+          .build();
+    } catch (RuntimeException e) {
+      String actual = e.getMessage();
+      assertEquals(expected, actual);
+    }
+  }
 }
