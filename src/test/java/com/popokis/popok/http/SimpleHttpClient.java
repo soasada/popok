@@ -45,7 +45,7 @@ public final class SimpleHttpClient {
     return Holder.INSTANCE;
   }
 
-  public String get(String url) {
+  public HttpResponse<String> get(String url) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .timeout(timeout)
@@ -55,7 +55,7 @@ public final class SimpleHttpClient {
     return httpRequest(request);
   }
 
-  public String post(String url, String jsonBody) {
+  public HttpResponse<String> post(String url, String jsonBody) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .timeout(timeout)
@@ -65,10 +65,10 @@ public final class SimpleHttpClient {
     return httpRequest(request);
   }
 
-  private String httpRequest(HttpRequest request) {
+  private HttpResponse<String> httpRequest(HttpRequest request) {
     try {
       HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-      return response.body();
+      return response;
     } catch (IOException | InterruptedException e) {
       throw new RuntimeException(e);
     }

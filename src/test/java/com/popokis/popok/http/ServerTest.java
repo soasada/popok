@@ -1,37 +1,49 @@
 package com.popokis.popok.http;
 
 import io.undertow.Handlers;
-import io.undertow.util.StatusCodes;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.net.http.HttpResponse;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ServerTest {
 
-  private static final String HTTP_URL = "http://localhost:8080";
+  private static final String HTTP_URL = "http://localhost:8081";
   private static final String HTTPS_URL = "https://localhost:8443";
+  private static final Server HTTP_SERVER = Server.builder(TestRouter.of())
+      .propertiesFilename("app_simple.properties")
+      .build();
+  private static final Server HTTPS_SERVER = Server.builder(TestRouter.of())
+      .propertiesFilename("app_simple_https.properties")
+      .enableHttps()
+      .keyStorePath("keystore.jks")
+      .enableHttp2()
+      .redirectToHttps()
+      .build();
+
+  @BeforeEach
+  void setUp() {
+    HTTP_SERVER.start();
+    HTTPS_SERVER.start();
+  }
+
+  @AfterEach
+  void tearDown() {
+    HTTP_SERVER.stop();
+    HTTPS_SERVER.stop();
+  }
 
   @Test
   void shouldReturnHelloWorldResponse() {
     String expected = "Hello World!";
-    Server server = Server.builder(
-        Handlers.path()
-            .addPrefixPath("/api/v1", Handlers.routing()
-                .get("/hello", (exchange) -> {
-                  exchange.setStatusCode(StatusCodes.OK);
-                  exchange.getResponseSender().send("Hello World!");
-                })
-            )
-    )
-        .propertiesFilename("app_simple.properties")
-        .build();
+    HttpResponse<String> actual = SimpleHttpClient.getInstance().get(HTTP_URL + "/api/v1/hello");
 
-    server.start();
-    String actual = SimpleHttpClient.getInstance().get(HTTP_URL + "/api/v1/hello");
-    server.stop();
-
-    assertEquals(expected, actual);
+    assertEquals(expected, actual.body());
   }
 
   @Test
@@ -71,24 +83,18 @@ class ServerTest {
   @Test
   void shouldLetHttpsRequests() {
     String expected = "Hello World!";
-    Server server = Server.builder(
-        Handlers.path()
-            .addPrefixPath("/api/v1", Handlers.routing()
-                .get("/hello", (exchange) -> {
-                  exchange.setStatusCode(StatusCodes.OK);
-                  exchange.getResponseSender().send("Hello World!");
-                })
-            )
-    )
-        .propertiesFilename("app_simple_https.properties")
-        .enableHttps()
-        .keyStorePath("keystore.jks")
-        .build();
+    HttpResponse<String> actual = SimpleHttpClient.getInstance().get(HTTPS_URL + "/api/v1/hello");
 
-    server.start();
-    String actual = SimpleHttpClient.getInstance().get(HTTPS_URL + "/api/v1/hello");
-    server.stop();
+    assertEquals(expected, actual.body());
+  }
 
-    assertEquals(expected, actual);
+  @Test
+  void shouldRedirectToHttps() {
+    String expected = "Hello World!";
+    HttpResponse<String> actual = SimpleHttpClient.getInstance().get("http://localhost:8080/api/v1/hello");
+
+    assertTrue(actual.headers().map().containsKey("x-undertow-transport"));
+    assertEquals("h2", actual.headers().map().get("x-undertow-transport").get(0));
+    assertEquals(expected, actual.body());
   }
 }
