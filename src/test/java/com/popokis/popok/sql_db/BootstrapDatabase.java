@@ -20,5 +20,12 @@ public final class BootstrapDatabase {
         + "department_id BIGINT, "
         + "FOREIGN KEY (department_id) REFERENCES department(id)"
         + ")"));
+
+    db.executeInsert(QueryFactory.create("INSERT INTO department (timestamp, name) VALUES (NOW(), 'department1')"));
+    db.executeInsert(QueryFactory.create("INSERT INTO department (timestamp, name) VALUES (NOW(), 'department2')"));
+    db.executeInsert(QueryFactory.create("INSERT INTO employee (name, department_id) VALUES ('Thomas', 1)"));
+    db.executeInsert(QueryFactory.create("INSERT INTO employee (name, department_id) VALUES ('Maria', 1)"));
+    db.executeInsert(QueryFactory.create("INSERT INTO employee (name, department_id) VALUES ('Johnny', 2)"));
+    db.executeInsert(QueryFactory.create("INSERT INTO employee (name, department_id) VALUES ('Carl', 2)"));
   }
 }
