@@ -14,10 +14,10 @@ import java.util.Optional;
 
 public final class Database {
 
-  private final DataSource dataSource;
+  private final DataSource connectionPool;
 
-  private Database(DataSource dataSource) {
-    this.dataSource = dataSource;
+  private Database(DataSource connectionPool) {
+    this.connectionPool = connectionPool;
   }
 
   public static Database create(DataSource dataSource) {
@@ -25,7 +25,7 @@ public final class Database {
   }
 
   public long executeInsert(Query query) {
-    try (Connection connection = dataSource.getConnection();
+    try (Connection connection = connectionPool.getConnection();
          PreparedStatement preparedStatement = connection.prepareStatement(query.query(), Statement.RETURN_GENERATED_KEYS)) {
       query.parameters(preparedStatement);
 
@@ -40,7 +40,7 @@ public final class Database {
   }
 
   public int executeDML(Query query) {
-    try (Connection connection = dataSource.getConnection();
+    try (Connection connection = connectionPool.getConnection();
          PreparedStatement preparedStatement = connection.prepareStatement(query.query())) {
       query.parameters(preparedStatement);
       return preparedStatement.executeUpdate();
@@ -53,7 +53,7 @@ public final class Database {
     CachedRowSet cachedRowSet;
     ResultSetWrappingSqlRowSet rowSet;
 
-    try (Connection connection = dataSource.getConnection();
+    try (Connection connection = connectionPool.getConnection();
          PreparedStatement preparedStatement = connection.prepareStatement(query.query())) {
       query.parameters(preparedStatement);
 
