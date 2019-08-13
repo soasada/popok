@@ -1,5 +1,6 @@
 package com.popokis.popok.sql_db;
 
+import com.popokis.popok.sql_db.mapper.DepartmentEmployeesMapper;
 import com.popokis.popok.sql_db.model.Department;
 import com.popokis.popok.sql_db.model.Employee;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
@@ -50,7 +52,7 @@ class DatabaseTest {
   }
 
   @Test
-  void tenThousandQueries() throws ExecutionException, InterruptedException {
+  void shouldExecuteTenThousandQueries() throws ExecutionException, InterruptedException {
     List<Future<Optional<List<Employee>>>> results = new ArrayList<>();
     List<Optional<List<Employee>>> finalResult = new ArrayList<>();
 
@@ -66,5 +68,19 @@ class DatabaseTest {
     }
 
     assertEquals(10_000, finalResult.size());
+  }
+
+  @Test
+  void shouldExecuteAndMapAJoinWithAliases() {
+    Query join = QueryFactory.create("SELECT department.*, employee.id AS employee_id, employee.name AS employee_name, "
+        + "employee.department_id AS employee_department_id FROM department "
+        + "LEFT JOIN employee ON department.id = employee.department_id");
+
+    Optional<Set<Department>> departments = db.executeQuery(join, new DepartmentEmployeesMapper());
+
+    assertTrue(departments.isPresent());
+    assertEquals(2, departments.get().size());
+    assertEquals(2, new ArrayList<>(departments.get()).get(0).getEmployees().size());
+    assertEquals(2, new ArrayList<>(departments.get()).get(1).getEmployees().size());
   }
 }

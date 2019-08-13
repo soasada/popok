@@ -8,8 +8,8 @@ import lombok.Value;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Value
 @Builder(toBuilder = true)
@@ -18,7 +18,7 @@ public class Department implements JdbcMapper<Department> {
   @Builder.Default @NonNull Long id = 0L;
   @Builder.Default @NonNull LocalDateTime timestamp = LocalDateTime.now();
   @Builder.Default @NonNull String name = "";
-  @Builder.Default @NonNull List<Employee> employees = List.of();
+  @Builder.Default @NonNull Set<Employee> employees = Set.of();
 
   @Override
   public Optional<Department> map(ResultSetWrappingSqlRowSet resultSet) {
@@ -29,7 +29,7 @@ public class Department implements JdbcMapper<Department> {
             resultSet.getLong("id"),
             resultSet.getTimestamp("timestamp").toLocalDateTime(),
             resultSet.getString("name"),
-            List.of()
+            Set.of()
         )
     );
   }
