@@ -1,13 +1,16 @@
 package com.popokis.popok.sql_db;
 
 import com.popokis.popok.sql_db.model.Department;
+import com.popokis.popok.sql_db.model.Employee;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,18 +27,44 @@ class DatabaseTest {
 
   @Test
   void shouldReturnsTwoDepartments() {
-    Optional<List<Department>> departments = db.executeQuery(new Query() {
-      @Override
-      public String query() {
-        return "SELECT * FROM department LIMIT 100";
-      }
-
-      @Override
-      public void parameters(PreparedStatement stm) {}
-    }, ListMapper.of(Department.builder().build()));
+    Optional<List<Department>> departments = db.executeQuery(
+        QueryFactory.create("SELECT * FROM department LIMIT 100"),
+        ListMapper.of(Department.builder().build())
+    );
 
     assertTrue(departments.isPresent());
     assertFalse(departments.get().isEmpty());
     assertEquals(2, departments.get().size());
+  }
+
+  @Test
+  void shouldReturnsFourEmployees() {
+    Optional<List<Employee>> employees = db.executeQuery(
+        QueryFactory.create("SELECT * FROM employee LIMIT 100"),
+        ListMapper.of(Employee.builder().build())
+    );
+
+    assertTrue(employees.isPresent());
+    assertFalse(employees.get().isEmpty());
+    assertEquals(4, employees.get().size());
+  }
+
+  @Test
+  void tenThousandQueries() throws ExecutionException, InterruptedException {
+    List<Future<Optional<List<Employee>>>> results = new ArrayList<>();
+    List<Optional<List<Employee>>> finalResult = new ArrayList<>();
+
+    for (int i = 0; i < 10_000; i++) {
+      results.add(ForkJoinPool.commonPool().submit(() -> db.executeQuery(
+          QueryFactory.create("SELECT * FROM employee LIMIT 100"),
+          ListMapper.of(Employee.builder().build())
+      )));
+    }
+
+    for (Future<Optional<List<Employee>>> futureRoundResult : results) {
+      finalResult.add(futureRoundResult.get());
+    }
+
+    assertEquals(10_000, finalResult.size());
   }
 }
