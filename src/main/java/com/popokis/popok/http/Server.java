@@ -62,7 +62,7 @@ public final class Server {
             .build();
       }
     } catch (IOException e) {
-      throw new RuntimeException(File.separator + "app.properties not found, please create it inside resources folder.");
+      throw new RuntimeException(File.separator + builder.propertiesFilename + " not found, please create it inside resources folder.");
     }
   }
 
