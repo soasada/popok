@@ -13,9 +13,9 @@ import java.util.Optional;
 @Builder(toBuilder = true)
 @AllArgsConstructor(staticName = "create")
 public class Employee implements JdbcMapper<Employee> {
-  @NonNull Long id;
-  @NonNull String name;
-  @NonNull Long departmentId;
+  @Builder.Default @NonNull Long id = 0L;
+  @Builder.Default @NonNull String name = "";
+  @Builder.Default @NonNull Long departmentId = 0L;
 
   @Override
   public Optional<Employee> map(ResultSetWrappingSqlRowSet resultSet) {

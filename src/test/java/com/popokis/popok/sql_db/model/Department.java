@@ -15,10 +15,10 @@ import java.util.Optional;
 @Builder(toBuilder = true)
 @AllArgsConstructor(staticName = "create")
 public class Department implements JdbcMapper<Department> {
-  @NonNull Long id;
-  @NonNull LocalDateTime timestamp;
-  @NonNull String name;
-  @NonNull List<Employee> employees;
+  @Builder.Default @NonNull Long id = 0L;
+  @Builder.Default @NonNull LocalDateTime timestamp = LocalDateTime.now();
+  @Builder.Default @NonNull String name = "";
+  @Builder.Default @NonNull List<Employee> employees = List.of();
 
   @Override
   public Optional<Department> map(ResultSetWrappingSqlRowSet resultSet) {
