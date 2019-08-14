@@ -4,6 +4,16 @@
 Simple util classes for building HTTP based services. Popok provides useful classes to work with HTTP based APIs, SQL databases
 and JSON.
 
+_Java 12 maven artifact_
+
+```xml
+<dependency>
+    <groupId>com.popokis</groupId>
+    <artifactId>popok</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+
 ## Simple HTTP API example
 
 Popok use undertow as HTTP server, so creating a router is as simple as creating an `HttpHandler` of undertow.
