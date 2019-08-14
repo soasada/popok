@@ -22,7 +22,6 @@ import io.undertow.UndertowOptions;
 import io.undertow.attribute.ExchangeAttributes;
 import io.undertow.server.HttpHandler;
 import io.undertow.util.Headers;
-import io.undertow.util.StatusCodes;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -69,7 +68,7 @@ public final class Server {
             .setServerOption(UndertowOptions.ENABLE_HTTP2, builder.enableHttp2)
             .addHttpListener(Integer.parseInt(httpPort), address)
             .addHttpsListener(Integer.parseInt(httpsPort), address, createSSLContext(loadKeyStore(builder.keyStorePath)))
-            .setHandler(builder.redirectToHttps ? withHttpsRedirect(builder.router, httpsPort) : builder.router)
+            .setHandler(builder.redirectToHttps ? withHttpsRedirect(builder.router, httpsPort, builder.statusCode) : builder.router)
             .build();
       } else {
         this.server = Undertow.builder()
@@ -121,7 +120,9 @@ public final class Server {
     }
   }
 
-  private HttpHandler withHttpsRedirect(HttpHandler router, String httpsPort) {
+  private HttpHandler withHttpsRedirect(HttpHandler router, String httpsPort, int statusCode) {
+    if (String.valueOf(statusCode).charAt(0) != '3') throw new RuntimeException("Status code must be 3XX.");
+
     return Handlers.header(
         Handlers.predicate(
             secure(),
@@ -129,7 +130,7 @@ public final class Server {
             exchange -> {
               String httpsUrl = "https://" + exchange.getHostName() + ":" + httpsPort + exchange.getRelativePath();
               exchange.getResponseHeaders().add(Headers.LOCATION, httpsUrl);
-              exchange.setStatusCode(StatusCodes.MOVED_PERMANENTLY);
+              exchange.setStatusCode(statusCode);
             }
         ), "x-undertow-transport", ExchangeAttributes.transportProtocol()
     );
@@ -143,6 +144,7 @@ public final class Server {
     private boolean redirectToHttps = false;
     private boolean enableHttp2 = false;
     private String keyStorePath = "";
+    private int statusCode = 0;
 
     public Builder(HttpHandler router) {
       this.router = router;
@@ -158,8 +160,9 @@ public final class Server {
       return this;
     }
 
-    public Builder redirectToHttps() {
+    public Builder redirectToHttps(int statusCode) {
       this.redirectToHttps = true;
+      this.statusCode = statusCode;
       return this;
     }
 

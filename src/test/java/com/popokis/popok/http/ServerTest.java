@@ -17,6 +17,7 @@
 package com.popokis.popok.http;
 
 import io.undertow.Handlers;
+import io.undertow.util.StatusCodes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class ServerTest {
       .enableHttps()
       .keyStorePath("keystore.jks")
       .enableHttp2()
-      .redirectToHttps()
+      .redirectToHttps(StatusCodes.MOVED_PERMANENTLY)
       .build();
 
   @BeforeEach
