@@ -56,6 +56,6 @@ server.https.port=8443
 security.key.store.password=password
 ```
 
-The Server class also has to additional methods:
+The Server class also has two additional methods:
 * `redirectToHttps()` to redirect every request from HTTP to HTTPs.
 * `enableHttp2()` to enable HTTP2.
