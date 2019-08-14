@@ -4,7 +4,7 @@
 Simple util classes for building HTTP based services. Popok provides useful classes to work with HTTP based APIs, SQL databases
 and JSON.
 
-## Simple HTTP API
+## Simple HTTP API example
 
 Popok use undertow as HTTP server so creating a router is as simple as creating an `HttpHandler` of undertow.
 
