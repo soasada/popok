@@ -1,8 +1,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.popokis/popok/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.popokis/popok)
 
 # popok
-Simple util classes for building HTTP based services. Popok provides useful classes to work with HTTP based APIs, SQL databases
-and JSON.
+Popok provides useful classes to work with HTTP based APIs, execute SQL queries via raw JDBC and JSON asynchronous parsing.
 
 _Java 12 maven artifact_
 
@@ -10,23 +9,23 @@ _Java 12 maven artifact_
 <dependency>
     <groupId>com.popokis</groupId>
     <artifactId>popok</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 
 ## Simple HTTP API example
 
-Popok use undertow as HTTP server, so creating a router is as simple as creating an `HttpHandler` of undertow.
+Popok use [undertow](https://github.com/undertow-io/undertow) as HTTP server, so creating a router is as simple as creating an undertow `HttpHandler`.
 
 ```java
 // Router
 HttpHandler router = Handlers.path()
-                       .addPrefixPath("/api/v1", Handlers.routing()
-                         .get("/hello", (exchange) -> {
-                           exchange.setStatusCode(StatusCodes.OK);
-                           exchange.getResponseSender().send("Hello World!");
-                         })
-                       );
+  .addPrefixPath("/api/v1", Handlers.routing()
+    .get("/hello", (exchange) -> {
+      exchange.setStatusCode(StatusCodes.OK);
+      exchange.getResponseSender().send("Hello World!");
+    })
+  );
 // Create and start the server
 Server.builder(router)
   .build()
@@ -37,7 +36,7 @@ an `app.properties` file within the `resources` folder by default. If you want t
 `propertiesFilename()` builder method. The mandatory fields of the properties file are:
 
 * `server.http.port` to specify the HTTP port (an integer).
-* `server.address` to specify the address of the server (an IP or localhost).
+* `server.address` to specify the address of the server (an IP or `localhost`).
 
 Additionally, you can specify optional configuration fields in order to activate HTTPs:
 
@@ -45,7 +44,7 @@ Additionally, you can specify optional configuration fields in order to activate
 * `security.key.store.password` to specify the keystore password.
 
 If you want to enable the HTTPs feature you must use the `enableHttps()` builder method and the `keyStorePath()` method
-to specify the path within the `resources` folder of the keystore.
+to specify the path of the keystore within the `resources` folder.
 
 An example of `app.properties` file could be:
 
