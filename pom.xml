@@ -155,7 +155,7 @@
                 <configuration>
                     <verbose>true</verbose>
                     <fork>true</fork>
-                    <executable>/opt/prod_jdk/bin/javac</executable>
+<!--                    <executable>/opt/prod_jdk/bin/javac</executable>-->
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
