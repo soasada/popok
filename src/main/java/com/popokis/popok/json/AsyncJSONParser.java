@@ -63,7 +63,7 @@ public final class AsyncJSONParser {
 
   public List<TokenBuffer> chunks(List<byte[]> data) {
     return data.stream()
-        .map(d -> parse(d, new ArrayList<>()))
+        .map(this::whole)
         .flatMap(List::stream)
         .collect(toList());
   }
