@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -89,14 +88,6 @@ class AsyncJSONParserTest {
       this.id = id;
       this.timestamp = timestamp;
       this.values = values;
-    }
-
-    public static Model random() {
-      Model model = new Model();
-      model.setId(UUID.randomUUID().toString());
-      model.setTimestamp(LocalDateTime.now());
-      model.setValues(List.of(1, 2, 3));
-      return model;
     }
 
     public String getId() {
