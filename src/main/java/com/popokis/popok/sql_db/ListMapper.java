@@ -39,8 +39,7 @@ public final class ListMapper<T> implements JdbcMapper<List<T>> {
     List<T> resultList = new ArrayList<>();
 
     do {
-      Optional<T> optional = modelMapper.map(rowSet);
-      optional.ifPresent(resultList::add);
+      modelMapper.map(rowSet).ifPresent(resultList::add);
     } while (rowSet.next());
 
     return Optional.of(resultList);
