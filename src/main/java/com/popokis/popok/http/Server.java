@@ -66,12 +66,14 @@ public final class Server {
 
         this.server = Undertow.builder()
             .setServerOption(UndertowOptions.ENABLE_HTTP2, builder.enableHttp2)
+            .setServerOption(UndertowOptions.ALWAYS_SET_KEEP_ALIVE, false)
             .addHttpListener(Integer.parseInt(httpPort), address)
             .addHttpsListener(Integer.parseInt(httpsPort), address, createSSLContext(loadKeyStore(builder.keyStorePath)))
             .setHandler(builder.redirectToHttps ? withHttpsRedirect(builder.router, httpsPort, builder.statusCode) : builder.router)
             .build();
       } else {
         this.server = Undertow.builder()
+            .setServerOption(UndertowOptions.ALWAYS_SET_KEEP_ALIVE, false)
             .addHttpListener(Integer.parseInt(httpPort), address)
             .setHandler(builder.router)
             .build();
