@@ -61,7 +61,6 @@ public final class Server {
         if (Objects.isNull(httpsPort)) throw new RuntimeException("server.https.port property not found.");
         String keyStorePassword = appProps.getProperty("security.key.store.password");
         if (Objects.isNull(keyStorePassword)) throw new RuntimeException("security.key.store.password property not found.");
-        if (builder.keyStorePath.isEmpty()) throw new RuntimeException("keyStorePath cannot be empty.");
         this.keyStorePassword = keyStorePassword.toCharArray();
 
         this.server = Undertow.builder()
@@ -123,8 +122,6 @@ public final class Server {
   }
 
   private HttpHandler withHttpsRedirect(HttpHandler router, String httpsPort, int statusCode) {
-    if (String.valueOf(statusCode).charAt(0) != '3') throw new RuntimeException("Status code must be 3XX.");
-
     return Handlers.header(
         Handlers.predicate(
             secure(),
@@ -153,16 +150,26 @@ public final class Server {
     }
 
     public Builder propertiesFilename(String name) {
+      if (Objects.isNull(name) || name.isEmpty())
+        throw new RuntimeException("properties file cannot be null or empty.");
+
       this.propertiesFilename = name;
       return this;
     }
 
-    public Builder enableHttps() {
+    public Builder enableHttps(String keyStorePath) {
+      if (Objects.isNull(keyStorePath) || keyStorePath.isEmpty())
+        throw new RuntimeException("keyStorePath cannot be null or empty.");
+
       this.isHttps = true;
+      this.keyStorePath = keyStorePath;
       return this;
     }
 
     public Builder redirectToHttps(int statusCode) {
+      if (String.valueOf(statusCode).charAt(0) != '3')
+        throw new RuntimeException("Status code must be 3XX.");
+
       this.redirectToHttps = true;
       this.statusCode = statusCode;
       return this;
@@ -170,11 +177,6 @@ public final class Server {
 
     public Builder enableHttp2() {
       this.enableHttp2 = true;
-      return this;
-    }
-
-    public Builder keyStorePath(String keyStorePath) {
-      this.keyStorePath = keyStorePath;
       return this;
     }
 

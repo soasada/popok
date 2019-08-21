@@ -37,8 +37,7 @@ class ServerTest {
       .build();
   private static final Server HTTPS_SERVER = Server.builder(TestRouter.of())
       .propertiesFilename("app_simple_https.properties")
-      .enableHttps()
-      .keyStorePath("keystore.jks")
+      .enableHttps("keystore.jks")
       .enableHttp2()
       .redirectToHttps(StatusCodes.MOVED_PERMANENTLY)
       .build();
