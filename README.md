@@ -9,7 +9,7 @@ _Java 12 maven artifact_
 <dependency>
     <groupId>com.popokis</groupId>
     <artifactId>popok</artifactId>
-    <version>1.2.4</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
