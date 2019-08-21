@@ -43,8 +43,7 @@ Additionally, you can specify optional configuration fields in order to activate
 * `server.https.port` to specify the HTTPs port (an integer).
 * `security.key.store.password` to specify the keystore password.
 
-If you want to enable the HTTPs feature you must use the `enableHttps()` builder method and the `keyStorePath()` method
-to specify the path of the keystore within the `resources` folder.
+If you want to enable the HTTPs feature you must use the `enableHttps()` builder method and specify the path of the keystore within the `resources` folder.
 
 An example of `app.properties` file could be:
 
