@@ -35,7 +35,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 
 import static io.undertow.predicate.Predicates.secure;
@@ -52,15 +52,15 @@ public final class Server {
       appProps.load(fi);
 
       String httpPort = appProps.getProperty("server.http.port");
-      if (nullOrEmpty(httpPort)) throw new RuntimeException("server.http.port property not found.");
+      if (builder.nullOrEmpty(httpPort)) throw new RuntimeException("server.http.port property not found.");
       String address = appProps.getProperty("server.address");
-      if (nullOrEmpty(address)) throw new RuntimeException("server.address property not found.");
+      if (builder.nullOrEmpty(address)) throw new RuntimeException("server.address property not found.");
 
       if (builder.isHttps) {
         String httpsPort = appProps.getProperty("server.https.port");
-        if (nullOrEmpty(httpsPort)) throw new RuntimeException("server.https.port property not found.");
+        if (builder.nullOrEmpty(httpsPort)) throw new RuntimeException("server.https.port property not found.");
         String keyStorePassword = appProps.getProperty("security.key.store.password");
-        if (nullOrEmpty(keyStorePassword)) throw new RuntimeException("security.key.store.password property not found.");
+        if (builder.nullOrEmpty(keyStorePassword)) throw new RuntimeException("security.key.store.password property not found.");
         this.keyStorePassword = keyStorePassword.toCharArray();
 
         this.server = Undertow.builder()
@@ -135,10 +135,6 @@ public final class Server {
     );
   }
 
-  private boolean nullOrEmpty(String value) {
-    return Objects.isNull(value) || value.isEmpty();
-  }
-
   public static class Builder {
     private final HttpHandler router;
 
@@ -154,7 +150,7 @@ public final class Server {
     }
 
     public Builder propertiesFilename(String name) {
-      if (Objects.isNull(name) || name.isEmpty())
+      if (nullOrEmpty(name))
         throw new RuntimeException("properties file cannot be null or empty.");
 
       this.propertiesFilename = name;
@@ -162,7 +158,7 @@ public final class Server {
     }
 
     public Builder enableHttps(String keyStorePath) {
-      if (Objects.isNull(keyStorePath) || keyStorePath.isEmpty())
+      if (nullOrEmpty(keyStorePath))
         throw new RuntimeException("keyStorePath cannot be null or empty.");
 
       this.isHttps = true;
@@ -186,6 +182,10 @@ public final class Server {
 
     public Server build() {
       return new Server(this);
+    }
+
+    private boolean nullOrEmpty(String value) {
+      return Optional.ofNullable(value).orElse("").trim().isEmpty();
     }
   }
 }
