@@ -52,15 +52,15 @@ public final class Server {
       appProps.load(fi);
 
       String httpPort = appProps.getProperty("server.http.port");
-      if (Objects.isNull(httpPort)) throw new RuntimeException("server.http.port property not found.");
+      if (nullOrEmpty(httpPort)) throw new RuntimeException("server.http.port property not found.");
       String address = appProps.getProperty("server.address");
-      if (Objects.isNull(address)) throw new RuntimeException("server.address property not found.");
+      if (nullOrEmpty(address)) throw new RuntimeException("server.address property not found.");
 
       if (builder.isHttps) {
         String httpsPort = appProps.getProperty("server.https.port");
-        if (Objects.isNull(httpsPort)) throw new RuntimeException("server.https.port property not found.");
+        if (nullOrEmpty(httpsPort)) throw new RuntimeException("server.https.port property not found.");
         String keyStorePassword = appProps.getProperty("security.key.store.password");
-        if (Objects.isNull(keyStorePassword)) throw new RuntimeException("security.key.store.password property not found.");
+        if (nullOrEmpty(keyStorePassword)) throw new RuntimeException("security.key.store.password property not found.");
         this.keyStorePassword = keyStorePassword.toCharArray();
 
         this.server = Undertow.builder()
@@ -133,6 +133,10 @@ public final class Server {
             }
         ), "x-undertow-transport", ExchangeAttributes.transportProtocol()
     );
+  }
+
+  private boolean nullOrEmpty(String value) {
+    return Objects.isNull(value) || value.isEmpty();
   }
 
   public static class Builder {
