@@ -31,9 +31,32 @@ Server.builder(router)
   .build()
   .start();
 ```
-The [Server.java](/src/main/java/com/popokis/popok/http/Server.java) class uses a `.properties` file, it will try to find
-an `app.properties` file within the `resources` folder by default. If you want to specify another name you can use the
-`propertiesFilename()` builder method. The mandatory fields of the properties file are:
+
+## Bootstrapping a Server
+
+The [Server.java](/src/main/java/com/popokis/popok/http/Server.java) it's just a wrapper class over Undertow class to add some functionality such as: HTTPs/HTTP2 support and HTTP to HTTPs redirection. To instantiate a Server you have to provide an undertow `HttpHandler` as router and use the builder API that provides you the following methods:
+
+```java
+propertiesFilename(String name)
+```
+If you want to specify a different name for the properties configuration file (default: `app.properties`).
+
+```java
+enableHttps(String keyStorePath)
+```
+Enables HTTP support. You have to specify the keystore path inside the `resources` folder.
+
+```java
+redirectToHttps(int statusCode)
+```
+Enables HTTP to HTTPs redirection. You have to specify the HTTP `3XX` code that you need.
+
+```java
+enableHttp2()
+```
+Enables HTTP2 support.
+
+The Server class uses a `.properties` file, by default `app.properties` inside the `resources` folder. The mandatory fields of the properties file are:
 
 * `server.http.port` to specify the HTTP port (an integer).
 * `server.address` to specify the address of the server (an IP or `localhost`).
@@ -43,8 +66,6 @@ Additionally, you can specify optional configuration fields in order to activate
 * `server.https.port` to specify the HTTPs port (an integer).
 * `security.key.store.password` to specify the keystore password.
 
-If you want to enable the HTTPs feature you must use the `enableHttps()` builder method and specify the path of the keystore within the `resources` folder.
-
 An example of `app.properties` file could be:
 
 ```java
@@ -53,7 +74,3 @@ server.address=localhost
 server.https.port=8443
 security.key.store.password=password
 ```
-
-The Server class also has two additional methods:
-* `redirectToHttps()` to redirect every request from HTTP to HTTPs.
-* `enableHttp2()` to enable HTTP2.
