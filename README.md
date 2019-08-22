@@ -31,7 +31,7 @@ Server.builder(router)
   .build()
   .start();
 ```
-
+Are you looking for a more advanced example? [Click here](https://github.com/soasada/undertow-vuejs)
 ## Bootstrapping a Server
 
 [Server.java](/src/main/java/com/popokis/popok/http/Server.java) it's just an Undertow wrapper class to add some functionality such as: HTTPs/HTTP2 support and HTTP to HTTPs redirection. To instantiate a Server you have to provide an undertow `HttpHandler` as router and use the builder API that provides you the following methods:
