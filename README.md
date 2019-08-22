@@ -36,27 +36,27 @@ Server.builder(router)
 
 [Server.java](/src/main/java/com/popokis/popok/http/Server.java) it's just an Undertow wrapper class to add some functionality such as: HTTPs/HTTP2 support and HTTP to HTTPs redirection. To instantiate a Server you have to provide an undertow `HttpHandler` as router and use the builder API that provides you the following methods:
 
-*```java
+```java
 propertiesFilename(String name)
 ```
-If you want to specify a different name for the properties configuration file (default: `app.properties`).
+1) If you want to specify a different name for the properties configuration file (default: `app.properties`).
 
 ```java
 enableHttps(String keyStorePath)
 ```
-Enables HTTPs support. You have to specify the keystore path inside the `resources` folder.
+2) Enables HTTPs support. You have to specify the keystore path inside the `resources` folder.
 
 ```java
 redirectToHttps(int statusCode)
 ```
-Enables HTTP to HTTPs redirection. You have to specify the HTTP `3XX` code that you need.
+3) Enables HTTP to HTTPs redirection. You have to specify the HTTP `3XX` code that you need.
 
 ```java
 enableHttp2()
 ```
-Enables HTTP2 support.
+4) Enables HTTP2 support.
 
-The Server class uses a `.properties` file, by default `app.properties` inside the `resources` folder. The mandatory fields of the properties file are:
+Additionally, the Server class uses a `.properties` file, by default `app.properties` (should be inside `resources` folder). The mandatory fields of this file are:
 
 * `server.http.port` to specify the HTTP port (an integer).
 * `server.address` to specify the address of the server (an IP or `localhost`).
