@@ -44,7 +44,7 @@ If you want to specify a different name for the properties configuration file (d
 ```java
 enableHttps(String keyStorePath)
 ```
-Enables HTTP support. You have to specify the keystore path inside the `resources` folder.
+Enables HTTPs support. You have to specify the keystore path inside the `resources` folder.
 
 ```java
 redirectToHttps(int statusCode)
