@@ -34,7 +34,7 @@ Server.builder(router)
 
 ## Bootstrapping a Server
 
-The [Server.java](/src/main/java/com/popokis/popok/http/Server.java) it's just a wrapper class over Undertow class to add some functionality such as: HTTPs/HTTP2 support and HTTP to HTTPs redirection. To instantiate a Server you have to provide an undertow `HttpHandler` as router and use the builder API that provides you the following methods:
+The [Server.java](/src/main/java/com/popokis/popok/http/Server.java) class it's just a wrapper class over Undertow class to add some functionality such as: HTTPs/HTTP2 support and HTTP to HTTPs redirection. To instantiate a Server you have to provide an undertow `HttpHandler` as router and use the builder API that provides you the following methods:
 
 ```java
 propertiesFilename(String name)
