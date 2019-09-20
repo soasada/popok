@@ -3,13 +3,13 @@
 # popok
 Popok provides useful classes to work with HTTP based APIs, execute SQL queries via raw JDBC and JSON asynchronous parsing.
 
-_Java 12 maven artifact_
+_Java 13 maven artifact_
 
 ```xml
 <dependency>
     <groupId>com.popokis</groupId>
     <artifactId>popok</artifactId>
-    <version>1.3.4</version>
+    <version>1.3.5</version>
 </dependency>
 ```
 
