@@ -40,8 +40,8 @@ Are you looking for a more advanced example? [Click here](https://github.com/soa
 
 ```java
 /**
-* Sets a different name for the properties configuration file,
-* if you don't use this method popok will look inside 'resources'
+* Sets a different name for the properties configuration file.
+* If you don't use this method popok will look inside 'resources'
 * folder, looking for 'app.properties' default file.
 */
 propertiesFilename(String name)
@@ -50,7 +50,7 @@ propertiesFilename(String name)
 ```java
 /**
 * Enables HTTPs support. You have to specify the keystore path,
-* popok will look for the file inside 'resources' folder.
+* popok will look inside 'resources' folder, looking for the 'keyStorePath'.
 */
 enableHttps(String keyStorePath)
 ```
