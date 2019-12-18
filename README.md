@@ -41,7 +41,8 @@ Are you looking for a more advanced example? [Click here](https://github.com/soa
 ```java
 /**
 * Sets a different name for the properties configuration file,
-* if you don't use this method popok will look inside 'resources' looking for 'app.properties' default file.
+* if you don't use this method popok will look inside 'resources'
+* looking for 'app.properties' default file.
 */
 propertiesFilename(String name)
 ```
@@ -56,7 +57,8 @@ enableHttps(String keyStorePath)
 
 ```java
 /**
-* Enables HTTP to HTTPs redirection. You have to specify which HTTP `3XX` code you want to use.
+* Enables HTTP to HTTPs redirection. You have to specify which
+* HTTP `3XX` code you want to use.
 */
 redirectToHttps(int statusCode)
 ```
