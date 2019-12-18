@@ -39,32 +39,36 @@ Are you looking for a more advanced example? [Click here](https://github.com/soa
 [Server.java](/src/main/java/com/popokis/popok/http/Server.java) it's just an Undertow wrapper class to add some functionality such as: HTTPs/HTTP2 support and HTTP to HTTPs redirection. To instantiate a Server you have to provide an undertow `HttpHandler` as router and use the builder API that provides you the following methods:
 
 ```java
+/**
+* Sets a different name for the properties configuration file,
+* if you don't use this method popok will look inside 'resources' looking for 'app.properties' default file.
+*/
 propertiesFilename(String name)
-
-// Sets a different name for the properties configuration file,
-// if you don't use this method popok will look inside 'resources' looking for 'app.properties' default.
 ```
 
 ```java
+/**
+* Enables HTTPs support. You have to specify the keystore path,
+* popok will look for the file in the 'resources' folder.
+*/
 enableHttps(String keyStorePath)
-
-// Enables HTTPs support. You have to specify the keystore path,
-// popok will look for the file in the 'resources' folder.
 ```
 
 ```java
+/**
+* Enables HTTP to HTTPs redirection. You have to specify which HTTP `3XX` code you want to use.
+*/
 redirectToHttps(int statusCode)
-
-// Enables HTTP to HTTPs redirection. You have to specify which HTTP `3XX` code you want to use.
 ```
 
 ```java
+/**
+* Enables HTTP2 support.
+*/
 enableHttp2()
-
-// Enables HTTP2 support.
 ```
 
-The mandatory fields, that popok needs for the properties file, are:
+The mandatory fields, that popok needs for the properties configuration file, are:
 
 * `server.http.port` to specify the HTTP port (an integer).
 * `server.address` to specify the address of the server (an IP or `localhost`).
