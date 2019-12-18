@@ -13,6 +13,8 @@ _Java 13 maven artifact_
 </dependency>
 ```
 
+#### NOTE: Feel free to do a pull request or create an issue if you need any new features or find a bug.
+
 ## Simple HTTP API example
 
 Popok use [undertow](https://github.com/undertow-io/undertow) as HTTP server, so creating a router is as simple as creating an undertow `HttpHandler`.
@@ -38,25 +40,29 @@ Are you looking for a more advanced example? [Click here](https://github.com/soa
 
 ```java
 propertiesFilename(String name)
+
+// Sets a different name for the properties configuration file, if you don't use this method popok will use 'app.properties' as default name.
 ```
-1) If you want to specify a different name for the properties configuration file (default: `app.properties`).
 
 ```java
 enableHttps(String keyStorePath)
+
+// Enables HTTPs support. You have to specify the keystore path, popok will look for the file in the `resources` folder.
 ```
-2) Enables HTTPs support. You have to specify the keystore path inside the `resources` folder.
 
 ```java
 redirectToHttps(int statusCode)
+
+// Enables HTTP to HTTPs redirection. You have to specify the HTTP `3XX` code that you need.
 ```
-3) Enables HTTP to HTTPs redirection. You have to specify the HTTP `3XX` code that you need.
 
 ```java
 enableHttp2()
-```
-4) Enables HTTP2 support.
 
-Additionally, the Server class uses a `.properties` file, by default `app.properties` (should be inside `resources` folder). The mandatory fields of this file are:
+// Enables HTTP2 support.
+```
+
+The mandatory fields, that popok needs for the properties file, are:
 
 * `server.http.port` to specify the HTTP port (an integer).
 * `server.address` to specify the address of the server (an IP or `localhost`).
