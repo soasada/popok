@@ -59,7 +59,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <undertow.version>2.0.29.Final</undertow.version>
-        <jackson.version>2.10.3</jackson.version>
+        <jackson.version>2.12.1</jackson.version>
         <spring-jdbc.version>5.2.4.RELEASE</spring-jdbc.version>
         <junit.version>5.6.0</junit.version>
         <hikari.version>3.4.2</hikari.version>
