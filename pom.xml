@@ -58,7 +58,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <undertow.version>2.3.20.Final</undertow.version>
+        <undertow.version>2.3.21.Final</undertow.version>
         <jackson.version>2.15.0</jackson.version>
         <spring-jdbc.version>6.1.14</spring-jdbc.version>
         <junit.version>5.6.0</junit.version>
